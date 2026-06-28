@@ -1,0 +1,2527 @@
+{\rtf1\ansi\ansicpg1251\cocoartf2870
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Bold;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red252\green95\blue163;\red31\green31\blue36;\red255\green255\blue255;
+\red93\green216\blue255;\red65\green161\blue192;\red158\green241\blue221;\red208\green168\blue255;\red252\green106\blue93;
+\red108\green121\blue134;\red146\green161\blue177;\red158\green241\blue221;\red103\green183\blue164;\red161\green103\blue230;
+\red161\green103\blue230;\red208\green168\blue255;\red208\green191\blue105;\red103\green183\blue164;}
+{\*\expandedcolortbl;;\csgenericrgb\c98839\c37355\c63833;\csgenericrgb\c12054\c12284\c14131;\csgenericrgb\c100000\c100000\c100000\c85000;
+\csgenericrgb\c36295\c84643\c99897;\csgenericrgb\c25490\c63137\c75294;\csgenericrgb\c61961\c94510\c86667;\csgenericrgb\c81681\c65692\c99927;\csgenericrgb\c98912\c41558\c36568;
+\csgenericrgb\c42394\c47462\c52518;\csgenericrgb\c57255\c63137\c69412;\csgenericrgb\c62145\c94386\c86819;\csgenericrgb\c40538\c71705\c64209;\csgenericrgb\c63137\c40392\c90196;
+\csgenericrgb\c63232\c40219\c90115;\csgenericrgb\c81569\c65882\c100000;\csgenericrgb\c81498\c74939\c41233;\csgenericrgb\c40392\c71765\c64314;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab593
+\pard\tx593\pardeftab593\partightenfactor0
+
+\f0\b\fs24 \cf2 \cb3 import
+\f1\b0 \cf4  Foundation\
+\
+
+\f0\b \cf2 class
+\f1\b0 \cf4  \cf5 APIClient\cf4  \{\
+    
+\f0\b \cf2 static
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 shared\cf4  = \cf7 APIClient\cf4 ()\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 baseURL\cf4  = \cf8 URL\cf4 (\cf8 string\cf4 : \cf9 "http://192.168.0.104:8000"\cf4 )!\
+    \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 init
+\f1\b0 \cf4 () \{\}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1040 \u1074 \u1090 \u1086 \u1088 \u1080 \u1079 \u1072 \u1094 \u1080 \u1103 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 login\cf4 (\cf6 login\cf4 : \cf8 String\cf4 , \cf6 password\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  
+\f0\b \cf2 throws
+\f1\b0 \cf4  -> \cf12 TokenResponse\cf4  \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (\cf9 "/api/auth/login"\cf4 )\
+        
+\f0\b \cf2 var
+\f1\b0 \cf4  req = \cf8 URLRequest\cf4 (\cf8 url\cf4 : url)\
+        req.\cf15 httpMethod\cf4  = \cf9 "POST"\cf4 \
+        req.\cf14 setValue\cf4 (\cf9 "application/json"\cf4 , \cf14 forHTTPHeaderField\cf4 : \cf9 "Content-Type"\cf4 )\
+        req.\cf15 httpBody\cf4  = 
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONEncoder\cf4 ().\cf14 encode\cf4 (\cf12 LoginRequest\cf4 (\cf12 login\cf4 : login, \cf12 password\cf4 : password))\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  (data, response) = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 URLSession\cf4 .\cf15 shared\cf4 .\cf14 data\cf4 (\cf14 for\cf4 : req)\
+        \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  httpResponse = response 
+\f0\b \cf2 as
+\f1\b0 \cf4 ? \cf16 HTTPURLResponse\cf4  \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  Login HTTP Status: \cf4 \\(httpResponse.\cf15 statusCode\cf4 )\cf9 "\cf4 )\
+        \}\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  tokenResponse = 
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONDecoder\cf4 ().\cf14 decode\cf4 (\cf12 TokenResponse\cf4 .
+\f0\b \cf2 self
+\f1\b0 \cf4 , \cf14 from\cf4 : data)\
+        \
+        \cf10 // \uc0\u55357 \u56613  \u1042 \u1040 \u1046 \u1053 \u1054 : \u1089 \u1086 \u1093 \u1088 \u1072 \u1085 \u1103 \u1077 \u1084  \u1090 \u1086 \u1082 \u1077 \u1085  \u1089 \u1088 \u1072 \u1079 \u1091  \u1087 \u1086 \u1089 \u1083 \u1077  \u1087 \u1086 \u1083 \u1091 \u1095 \u1077 \u1085 \u1080 \u1103 \cf4 \
+        \cf16 UserDefaults\cf4 .\cf15 standard\cf4 .\cf14 set\cf4 (tokenResponse.\cf13 accessToken\cf4 , \cf14 forKey\cf4 : \cf9 "jwt_token"\cf4 )\
+        \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  Token saved: \cf4 \\(tokenResponse.\cf13 accessToken\cf4 .\cf14 prefix\cf4 (\cf17 20\cf4 ))\cf9 ..."\cf4 )\
+        \
+        
+\f0\b \cf2 return
+\f1\b0 \cf4  tokenResponse\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1055 \u1086 \u1083 \u1091 \u1095 \u1077 \u1085 \u1080 \u1077  \u1089 \u1087 \u1080 \u1089 \u1082 \u1072  \u1079 \u1072 \u1082 \u1072 \u1079 \u1086 \u1074 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 fetchOrders\cf4 () 
+\f0\b \cf2 async
+\f1\b0 \cf4  
+\f0\b \cf2 throws
+\f1\b0 \cf4  -> [\cf12 OrderSummary\cf4 ] \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (\cf9 "/api/orders/"\cf4 )\
+        
+\f0\b \cf2 var
+\f1\b0 \cf4  req = \cf8 URLRequest\cf4 (\cf8 url\cf4 : url)\
+        req.\cf15 httpMethod\cf4  = \cf9 "GET"\cf4 \
+        \
+        \cf10 // \uc0\u55357 \u56613  \u1048 \u1057 \u1055 \u1056 \u1040 \u1042 \u1051 \u1045 \u1053 \u1054 : \u1087 \u1077 \u1088 \u1077 \u1076 \u1072 \u1105 \u1084  req \u1087 \u1086  \u1089 \u1089 \u1099 \u1083 \u1082 \u1077  (&)\cf4 \
+        \cf18 addAuthHeaders\cf4 (\cf18 to\cf4 : &req)\
+        \
+        \cf10 // \uc0\u55357 \u56613  \u1054 \u1058 \u1051 \u1040 \u1044 \u1050 \u1040 : \u1087 \u1088 \u1086 \u1074 \u1077 \u1088 \u1103 \u1077 \u1084 , \u1077 \u1089 \u1090 \u1100  \u1083 \u1080  \u1079 \u1072 \u1075 \u1086 \u1083 \u1086 \u1074 \u1086 \u1082  Authorization\cf4 \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  authHeader = req.\cf14 value\cf4 (\cf14 forHTTPHeaderField\cf4 : \cf9 "Authorization"\cf4 ) \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  Auth header present: \cf4 \\(authHeader.\cf14 prefix\cf4 (\cf17 30\cf4 ))\cf9 ..."\cf4 )\
+        \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u10060  Auth header MISSING!"\cf4 )\
+        \}\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  (data, response) = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 URLSession\cf4 .\cf15 shared\cf4 .\cf14 data\cf4 (\cf14 for\cf4 : req)\
+        \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  httpResponse = response 
+\f0\b \cf2 as
+\f1\b0 \cf4 ? \cf16 HTTPURLResponse\cf4  \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  FetchOrders HTTP Status: \cf4 \\(httpResponse.\cf15 statusCode\cf4 )\cf9 "\cf4 )\
+        \}\
+        \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  responseString = \cf8 String\cf4 (\cf8 data\cf4 : data, \cf8 encoding\cf4 : .\cf15 utf8\cf4 ) \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  FetchOrders Response: \cf4 \\(responseString)\cf9 "\cf4 )\
+        \}\
+        \
+        
+\f0\b \cf2 return
+\f1\b0 \cf4  
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONDecoder\cf4 ().\cf14 decode\cf4 ([\cf12 OrderSummary\cf4 ].
+\f0\b \cf2 self
+\f1\b0 \cf4 , \cf14 from\cf4 : data)\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1044 \u1077 \u1090 \u1072 \u1083 \u1080  \u1079 \u1072 \u1082 \u1072 \u1079 \u1072 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 fetchOrderDetails\cf4 (\cf6 orderID\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  
+\f0\b \cf2 throws
+\f1\b0 \cf4  -> \cf12 OrderDetails\cf4  \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (\cf9 "/api/orders/\cf4 \\(orderID)\cf9 "\cf4 )\
+        
+\f0\b \cf2 var
+\f1\b0 \cf4  req = \cf8 URLRequest\cf4 (\cf8 url\cf4 : url)\
+        req.\cf15 httpMethod\cf4  = \cf9 "GET"\cf4 \
+        \cf18 addAuthHeaders\cf4 (\cf18 to\cf4 : &req)\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  (data, _) = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 URLSession\cf4 .\cf15 shared\cf4 .\cf14 data\cf4 (\cf14 for\cf4 : req)\
+        
+\f0\b \cf2 return
+\f1\b0 \cf4  
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONDecoder\cf4 ().\cf14 decode\cf4 (\cf12 OrderDetails\cf4 .
+\f0\b \cf2 self
+\f1\b0 \cf4 , \cf14 from\cf4 : data)\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1055 \u1086 \u1089 \u1090 \u1088 \u1086 \u1077 \u1085 \u1080 \u1077  \u1084 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090 \u1072 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 buildRoute\cf4 (\cf6 orderID\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  
+\f0\b \cf2 throws
+\f1\b0 \cf4  -> \cf12 RouteResponse\cf4  \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (\cf9 "/api/routes/build/\cf4 \\(orderID)\cf9 "\cf4 )\
+        
+\f0\b \cf2 var
+\f1\b0 \cf4  req = \cf8 URLRequest\cf4 (\cf8 url\cf4 : url)\
+        req.\cf15 httpMethod\cf4  = \cf9 "POST"\cf4 \
+        \cf18 addAuthHeaders\cf4 (\cf18 to\cf4 : &req)\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  (data, response) = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 URLSession\cf4 .\cf15 shared\cf4 .\cf14 data\cf4 (\cf14 for\cf4 : req)\
+        \
+        \cf10 // \uc0\u55357 \u56613  \u1054 \u1058 \u1051 \u1040 \u1044 \u1050 \u1040 : \u1087 \u1086 \u1082 \u1072 \u1079 \u1099 \u1074 \u1072 \u1077 \u1084  \u1086 \u1090 \u1074 \u1077 \u1090  \u1089 \u1077 \u1088 \u1074 \u1077 \u1088 \u1072 \cf4 \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  httpResponse = response 
+\f0\b \cf2 as
+\f1\b0 \cf4 ? \cf16 HTTPURLResponse\cf4  \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  BuildRoute HTTP Status: \cf4 \\(httpResponse.\cf15 statusCode\cf4 )\cf9 "\cf4 )\
+        \}\
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  responseString = \cf8 String\cf4 (\cf8 data\cf4 : data, \cf8 encoding\cf4 : .\cf15 utf8\cf4 ) \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  BuildRoute Response: \cf4 \\(responseString)\cf9 "\cf4 )\
+        \}\
+        \
+        \cf10 // \uc0\u55357 \u56613  \u1055 \u1099 \u1090 \u1072 \u1077 \u1084 \u1089 \u1103  \u1076 \u1077 \u1082 \u1086 \u1076 \u1080 \u1088 \u1086 \u1074 \u1072 \u1090 \u1100  \u1089  \u1086 \u1073 \u1088 \u1072 \u1073 \u1086 \u1090 \u1082 \u1086 \u1081  \u1086 \u1096 \u1080 \u1073 \u1086 \u1082 \cf4 \
+        
+\f0\b \cf2 do
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 let
+\f1\b0 \cf4  routeResponse = 
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONDecoder\cf4 ().\cf14 decode\cf4 (\cf12 RouteResponse\cf4 .
+\f0\b \cf2 self
+\f1\b0 \cf4 , \cf14 from\cf4 : data)\
+            
+\f0\b \cf2 return
+\f1\b0 \cf4  routeResponse\
+        \} 
+\f0\b \cf2 catch
+\f1\b0 \cf4  \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u10060  Decode RouteResponse error: \cf4 \\(error)\cf9 "\cf4 )\
+            \cf14 print\cf4 (\cf9 "\uc0\u10060  Raw data: \cf4 \\(\cf8 String\cf4 (\cf8 data\cf4 : data, \cf8 encoding\cf4 : .\cf15 utf8\cf4 ) ?? \cf9 "nil"\cf4 )\cf9 "\cf4 )\
+            
+\f0\b \cf2 throw
+\f1\b0 \cf4  error\
+        \}\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1089 \u1090 \u1072 \u1090 \u1091 \u1089 \u1072  \u1079 \u1072 \u1082 \u1072 \u1079 \u1072 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 updateOrderStatus\cf4 (\cf6 orderID\cf4 : \cf8 String\cf4 , \cf6 status\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  
+\f0\b \cf2 throws
+\f1\b0 \cf4  \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (\cf9 "/api/orders/\cf4 \\(orderID)\cf9 /status"\cf4 )\
+        
+\f0\b \cf2 var
+\f1\b0 \cf4  req = \cf8 URLRequest\cf4 (\cf8 url\cf4 : url)\
+        req.\cf15 httpMethod\cf4  = \cf9 "POST"\cf4 \
+        req.\cf14 setValue\cf4 (\cf9 "application/json"\cf4 , \cf14 forHTTPHeaderField\cf4 : \cf9 "Content-Type"\cf4 )\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  body = [\cf9 "status"\cf4 : status]\
+        req.\cf15 httpBody\cf4  = 
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONEncoder\cf4 ().\cf14 encode\cf4 (body)\
+        \
+        \cf18 addAuthHeaders\cf4 (\cf18 to\cf4 : &req)\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  (data, response) = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 URLSession\cf4 .\cf15 shared\cf4 .\cf14 data\cf4 (\cf14 for\cf4 : req)\
+        
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf18 validateResponse\cf4 (response, \cf18 data\cf4 : data)\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1054 \u1090 \u1087 \u1088 \u1072 \u1074 \u1082 \u1072  \u1089 \u1086 \u1073 \u1099 \u1090 \u1080 \u1103  \u1089 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1103 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 sendScanEvent\cf4 (\cf6 _\cf4  event: \cf12 ScanEvent\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  
+\f0\b \cf2 throws
+\f1\b0 \cf4  \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (\cf9 "/api/scans/verify/\cf4 \\(event.\cf13 orderID\cf4 )\cf9 "\cf4 )\
+        
+\f0\b \cf2 var
+\f1\b0 \cf4  req = \cf8 URLRequest\cf4 (\cf8 url\cf4 : url)\
+        req.\cf15 httpMethod\cf4  = \cf9 "POST"\cf4 \
+        req.\cf14 setValue\cf4 (\cf9 "application/json"\cf4 , \cf14 forHTTPHeaderField\cf4 : \cf9 "Content-Type"\cf4 )\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  body = [\cf9 "barcode"\cf4 : event.\cf13 barcode\cf4 ]\
+        req.\cf15 httpBody\cf4  = 
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONEncoder\cf4 ().\cf14 encode\cf4 (body)\
+        \
+        \cf18 addAuthHeaders\cf4 (\cf18 to\cf4 : &req)\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  (data, response) = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 URLSession\cf4 .\cf15 shared\cf4 .\cf14 data\cf4 (\cf14 for\cf4 : req)\
+        
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf18 validateResponse\cf4 (response, \cf18 data\cf4 : data)\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1042 \u1077 \u1088 \u1080 \u1092 \u1080 \u1082 \u1072 \u1094 \u1080 \u1103  \u1089 \u1082 \u1072 \u1085 \u1072 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 verifyScan\cf4 (\cf6 orderID\cf4 : \cf8 String\cf4 , \cf6 barcode\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  
+\f0\b \cf2 throws
+\f1\b0 \cf4  -> \cf12 ScanResponse\cf4  \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (\cf9 "/api/scans/verify/\cf4 \\(orderID)\cf9 "\cf4 )\
+        
+\f0\b \cf2 var
+\f1\b0 \cf4  req = \cf8 URLRequest\cf4 (\cf8 url\cf4 : url)\
+        req.\cf15 httpMethod\cf4  = \cf9 "POST"\cf4 \
+        req.\cf14 setValue\cf4 (\cf9 "application/json"\cf4 , \cf14 forHTTPHeaderField\cf4 : \cf9 "Content-Type"\cf4 )\
+        \cf18 addAuthHeaders\cf4 (\cf18 to\cf4 : &req)\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  body = [\cf9 "barcode"\cf4 : barcode]\
+        req.\cf15 httpBody\cf4  = 
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONEncoder\cf4 ().\cf14 encode\cf4 (body)\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  (data, _) = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 URLSession\cf4 .\cf15 shared\cf4 .\cf14 data\cf4 (\cf14 for\cf4 : req)\
+        
+\f0\b \cf2 return
+\f1\b0 \cf4  
+\f0\b \cf2 try
+\f1\b0 \cf4  \cf16 JSONDecoder\cf4 ().\cf14 decode\cf4 (\cf12 ScanResponse\cf4 .
+\f0\b \cf2 self
+\f1\b0 \cf4 , \cf14 from\cf4 : data)\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1042 \u1072 \u1083 \u1080 \u1076 \u1072 \u1094 \u1080 \u1103  \u1086 \u1090 \u1074 \u1077 \u1090 \u1072 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 validateResponse\cf4 (\cf6 _\cf4  response: \cf16 URLResponse\cf4 , \cf6 data\cf4 : \cf8 Data\cf4 ) 
+\f0\b \cf2 throws
+\f1\b0 \cf4  \{\
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  httpResponse = response 
+\f0\b \cf2 as
+\f1\b0 \cf4 ? \cf16 HTTPURLResponse\cf4  
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 throw
+\f1\b0 \cf4  \cf16 NSError\cf4 (\cf16 domain\cf4 : \cf9 "API"\cf4 , \cf16 code\cf4 : -\cf17 1\cf4 , \cf16 userInfo\cf4 : [\cf15 NSLocalizedDescriptionKey\cf4 : \cf9 "\uc0\u1053 \u1077 \u1074 \u1077 \u1088 \u1085 \u1099 \u1081  \u1086 \u1090 \u1074 \u1077 \u1090  \u1089 \u1077 \u1088 \u1074 \u1077 \u1088 \u1072 "\cf4 ])\
+        \}\
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  (\cf17 200\cf4 ..<\cf17 300\cf4 ).\cf14 contains\cf4 (httpResponse.\cf15 statusCode\cf4 ) 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 let
+\f1\b0 \cf4  body = \cf8 String\cf4 (\cf8 data\cf4 : data, \cf8 encoding\cf4 : .\cf15 utf8\cf4 ) ?? \cf9 ""\cf4 \
+            
+\f0\b \cf2 throw
+\f1\b0 \cf4  \cf16 NSError\cf4 (\cf16 domain\cf4 : \cf9 "API"\cf4 , \cf16 code\cf4 : httpResponse.\cf15 statusCode\cf4 ,\
+                         \cf16 userInfo\cf4 : [\cf15 NSLocalizedDescriptionKey\cf4 : \cf9 "HTTP \cf4 \\(httpResponse.\cf15 statusCode\cf4 )\cf9 : \cf4 \\(body)\cf9 "\cf4 ])\
+        \}\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1044 \u1086 \u1073 \u1072 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1079 \u1072 \u1075 \u1086 \u1083 \u1086 \u1074 \u1082 \u1072  \u1072 \u1074 \u1090 \u1086 \u1088 \u1080 \u1079 \u1072 \u1094 \u1080 \u1080 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 addAuthHeaders\cf4 (\cf6 to\cf4  req: 
+\f0\b \cf2 inout
+\f1\b0 \cf4  \cf8 URLRequest\cf4 ) \{\
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  token = \cf16 UserDefaults\cf4 .\cf15 standard\cf4 .\cf14 string\cf4 (\cf14 forKey\cf4 : \cf9 "jwt_token"\cf4 ) \{\
+            req.\cf14 setValue\cf4 (\cf9 "Bearer \cf4 \\(token)\cf9 "\cf4 , \cf14 forHTTPHeaderField\cf4 : \cf9 "Authorization"\cf4 )\
+            \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  Added Bearer token to request"\cf4 )\
+        \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u10060  No token found in UserDefaults!"\cf4 )\
+        \}\
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  Foundation\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  Combine\
+\
+
+\f0\b \cf2 class
+\f1\b0 \cf4  \cf5 AuthManager\cf4 : \cf8 ObservableObject\cf4  \{\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 isLoggedIn\cf4 : \cf8 Bool\cf4 \
+    \
+    
+\f0\b \cf2 init
+\f1\b0 \cf4 () \{\
+        
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 isLoggedIn\cf4  = \cf16 UserDefaults\cf4 .\cf15 standard\cf4 .\cf14 string\cf4 (\cf14 forKey\cf4 : \cf9 "jwt_token"\cf4 ) != 
+\f0\b \cf2 nil
+\f1\b0 \cf4 \
+    \}\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 setToken\cf4 (\cf6 _\cf4  token: \cf8 String\cf4 ) \{\
+        \cf16 UserDefaults\cf4 .\cf15 standard\cf4 .\cf14 set\cf4 (token, \cf14 forKey\cf4 : \cf9 "jwt_token"\cf4 )\
+        \cf13 isLoggedIn\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+    \}\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 logout\cf4 () \{\
+        \cf16 UserDefaults\cf4 .\cf15 standard\cf4 .\cf14 removeObject\cf4 (\cf14 forKey\cf4 : \cf9 "jwt_token"\cf4 )\
+        \cf13 isLoggedIn\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  SwiftUI\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  AVFoundation\
+\
+\cf10 // ============================================================================\cf4 \
+\cf10 // SwiftUI-\uc0\u1086 \u1073 \u1105 \u1088 \u1090 \u1082 \u1072  \u1076 \u1083 \u1103  UIViewController \u1089 \u1086  \u1089 \u1082 \u1072 \u1085 \u1077 \u1088 \u1086 \u1084 \cf4 \
+\cf10 // ============================================================================\cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 BarcodeScannerView\cf4 : \cf16 UIViewControllerRepresentable\cf4  \{\
+    \cf10 // \uc0\u55357 \u56613  \u1047 \u1072 \u1084 \u1099 \u1082 \u1072 \u1085 \u1080 \u1103 , \u1082 \u1086 \u1090 \u1086 \u1088 \u1099 \u1077  \u1087 \u1077 \u1088 \u1077 \u1076 \u1072 \u1102 \u1090 \u1089 \u1103  \u1080 \u1079 \u1074 \u1085 \u1077 \cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 onScanned\cf4 : (\cf8 String\cf4 ) -> \cf8 Void\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 onCancel\cf4 : () -> \cf8 Void\cf4 \
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 makeUIViewController\cf4 (\cf6 context\cf4 : \cf8 Context\cf4 ) -> \cf7 ScannerViewController\cf4  \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  vc = \cf7 ScannerViewController\cf4 ()\
+        \
+        \cf10 // \uc0\u55357 \u56613  \u1055 \u1088 \u1080 \u1074 \u1103 \u1079 \u1099 \u1074 \u1072 \u1077 \u1084  \u1079 \u1072 \u1084 \u1099 \u1082 \u1072 \u1085 \u1080 \u1103  \u1082  \u1082 \u1086 \u1085 \u1090 \u1088 \u1086 \u1083 \u1083 \u1077 \u1088 \u1091 \cf4 \
+        vc.\cf13 onCodeScanned\cf4  = \{ code 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+            DispatchQueue.\cf15 main\cf4 .\cf14 async\cf4  \{\
+                vc.\cf14 dismiss\cf4 (\cf14 animated\cf4 : 
+\f0\b \cf2 true
+\f1\b0 \cf4 ) \{\
+                    \cf13 onScanned\cf4 (code)\
+                \}\
+            \}\
+        \}\
+        \
+        vc.\cf13 onCancelTapped\cf4  = \{\
+            DispatchQueue.\cf15 main\cf4 .\cf14 async\cf4  \{\
+                vc.\cf14 dismiss\cf4 (\cf14 animated\cf4 : 
+\f0\b \cf2 true
+\f1\b0 \cf4 ) \{\
+                    \cf13 onCancel\cf4 ()\
+                \}\
+            \}\
+        \}\
+        \
+        
+\f0\b \cf2 return
+\f1\b0 \cf4  vc\
+    \}\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 updateUIViewController\cf4 (\cf6 _\cf4  uiViewController: \cf7 ScannerViewController\cf4 , \cf6 context\cf4 : \cf8 Context\cf4 ) \{\}\
+\}\
+\
+\cf10 // ============================================================================\cf4 \
+\cf10 // UIViewController \uc0\u1089  \u1082 \u1072 \u1084 \u1077 \u1088 \u1086 \u1081  \u1080  \u1086 \u1073 \u1083 \u1072 \u1089 \u1090 \u1100 \u1102  \u1089 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1103 \cf4 \
+\cf10 // ============================================================================\cf4 \
+
+\f0\b \cf2 final
+\f1\b0 \cf4  
+\f0\b \cf2 class
+\f1\b0 \cf4  \cf5 ScannerViewController\cf4 : \cf16 UIViewController\cf4 , \cf16 AVCaptureMetadataOutputObjectsDelegate\cf4  \{\
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 captureSession\cf4 : \cf16 AVCaptureSession\cf4 !\
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 previewLayer\cf4 : \cf16 AVCaptureVideoPreviewLayer\cf4 !\
+    \
+    \cf10 // \uc0\u55357 \u56613  \u1047 \u1072 \u1084 \u1099 \u1082 \u1072 \u1085 \u1080 \u1103  (\u1086 \u1073 \u1103 \u1079 \u1072 \u1090 \u1077 \u1083 \u1100 \u1085 \u1086  \u1086 \u1073 \u1098 \u1103 \u1074 \u1083 \u1077 \u1085 \u1099 !)\cf4 \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 onCodeScanned\cf4 : ((\cf8 String\cf4 ) -> \cf8 Void\cf4 )?\
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 onCancelTapped\cf4 : (() -> \cf8 Void\cf4 )?\
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 isScanning\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \
+    \cf10 // \uc0\u1054 \u1073 \u1083 \u1072 \u1089 \u1090 \u1100  \u1089 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1103  (\u1074  \u1085 \u1086 \u1088 \u1084 \u1072 \u1083 \u1080 \u1079 \u1086 \u1074 \u1072 \u1085 \u1085 \u1099 \u1093  \u1082 \u1086 \u1086 \u1088 \u1076 \u1080 \u1085 \u1072 \u1090 \u1072 \u1093  0...1)\cf4 \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 scanAreaRatio\cf4  = \cf8 CGRect\cf4 (\cf8 x\cf4 : \cf17 0.1\cf4 , \cf8 y\cf4 : \cf17 0.35\cf4 , \cf8 width\cf4 : \cf17 0.8\cf4 , \cf8 height\cf4 : \cf17 0.3\cf4 )\
+    \
+    
+\f0\b \cf2 override
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 viewDidLoad\cf4 () \{\
+        
+\f0\b \cf2 super
+\f1\b0 \cf4 .\cf14 viewDidLoad\cf4 ()\
+        \cf15 view\cf4 .\cf15 backgroundColor\cf4  = .\cf15 black\cf4 \
+        \cf18 setupCamera\cf4 ()\
+    \}\
+    \
+    
+\f0\b \cf2 override
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 viewDidLayoutSubviews\cf4 () \{\
+        
+\f0\b \cf2 super
+\f1\b0 \cf4 .\cf14 viewDidLayoutSubviews\cf4 ()\
+        \cf13 previewLayer\cf4 ?.\cf15 frame\cf4  = \cf15 view\cf4 .\cf15 layer\cf4 .\cf15 bounds\cf4 \
+        \cf18 setupOverlayIfNeeded\cf4 ()\
+    \}\
+    \
+    
+\f0\b \cf2 override
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 viewWillDisappear\cf4 (\cf6 _\cf4  animated: \cf8 Bool\cf4 ) \{\
+        
+\f0\b \cf2 super
+\f1\b0 \cf4 .\cf14 viewWillDisappear\cf4 (animated)\
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 captureSession\cf4 ?.\cf15 isRunning\cf4  == 
+\f0\b \cf2 true
+\f1\b0 \cf4  \{\
+            \cf13 captureSession\cf4 .\cf14 stopRunning\cf4 ()\
+        \}\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1053 \u1072 \u1089 \u1090 \u1088 \u1086 \u1081 \u1082 \u1072  \u1082 \u1072 \u1084 \u1077 \u1088 \u1099 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 setupCamera\cf4 () \{\
+        \cf13 captureSession\cf4  = \cf16 AVCaptureSession\cf4 ()\
+        \cf13 captureSession\cf4 .\cf15 sessionPreset\cf4  = .\cf15 high\cf4 \
+        \
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  videoDevice = \cf16 AVCaptureDevice\cf4 .\cf14 default\cf4 (\cf14 for\cf4 : .\cf15 video\cf4 ),\
+              
+\f0\b \cf2 let
+\f1\b0 \cf4  videoInput = 
+\f0\b \cf2 try
+\f1\b0 \cf4 ? \cf16 AVCaptureDeviceInput\cf4 (\cf16 device\cf4 : videoDevice),\
+              \cf13 captureSession\cf4 .\cf14 canAddInput\cf4 (videoInput) 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            \cf18 showAlert\cf4 (\cf9 "\uc0\u1054 \u1096 \u1080 \u1073 \u1082 \u1072 "\cf4 , \cf9 "\uc0\u1053 \u1077  \u1091 \u1076 \u1072 \u1083 \u1086 \u1089 \u1100  \u1087 \u1086 \u1083 \u1091 \u1095 \u1080 \u1090 \u1100  \u1076 \u1086 \u1089 \u1090 \u1091 \u1087  \u1082  \u1082 \u1072 \u1084 \u1077 \u1088 \u1077 "\cf4 )\
+            
+\f0\b \cf2 return
+\f1\b0 \cf4 \
+        \}\
+        \
+        \cf13 captureSession\cf4 .\cf14 addInput\cf4 (videoInput)\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  metadataOutput = \cf16 AVCaptureMetadataOutput\cf4 ()\
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  \cf13 captureSession\cf4 .\cf14 canAddOutput\cf4 (metadataOutput) 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            \cf18 showAlert\cf4 (\cf9 "\uc0\u1054 \u1096 \u1080 \u1073 \u1082 \u1072 "\cf4 , \cf9 "\uc0\u1053 \u1077  \u1091 \u1076 \u1072 \u1083 \u1086 \u1089 \u1100  \u1085 \u1072 \u1089 \u1090 \u1088 \u1086 \u1080 \u1090 \u1100  \u1082 \u1072 \u1084 \u1077 \u1088 \u1091 "\cf4 )\
+            
+\f0\b \cf2 return
+\f1\b0 \cf4 \
+        \}\
+        \
+        \cf13 captureSession\cf4 .\cf14 addOutput\cf4 (metadataOutput)\
+        metadataOutput.\cf14 setMetadataObjectsDelegate\cf4 (
+\f0\b \cf2 self
+\f1\b0 \cf4 , \cf14 queue\cf4 : DispatchQueue.\cf15 main\cf4 )\
+        metadataOutput.\cf15 metadataObjectTypes\cf4  = [.\cf15 ean8\cf4 , .\cf15 ean13\cf4 , .\cf15 code128\cf4 , .\cf15 qr\cf4 ]\
+        \
+        \cf10 // \uc0\u55357 \u56613  \u1054 \u1075 \u1088 \u1072 \u1085 \u1080 \u1095 \u1080 \u1074 \u1072 \u1077 \u1084  \u1086 \u1073 \u1083 \u1072 \u1089 \u1090 \u1100  \u1089 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1103 \cf4 \
+        metadataOutput.\cf15 rectOfInterest\cf4  = \cf13 scanAreaRatio\cf4 \
+        \
+        \cf13 previewLayer\cf4  = \cf16 AVCaptureVideoPreviewLayer\cf4 (\cf16 session\cf4 : \cf13 captureSession\cf4 )\
+        \cf13 previewLayer\cf4 .\cf15 frame\cf4  = \cf15 view\cf4 .\cf15 layer\cf4 .\cf15 bounds\cf4 \
+        \cf13 previewLayer\cf4 .\cf15 videoGravity\cf4  = .\cf15 resizeAspectFill\cf4 \
+        \cf15 view\cf4 .\cf15 layer\cf4 .\cf14 addSublayer\cf4 (\cf13 previewLayer\cf4 )\
+        \
+        \cf13 captureSession\cf4 .\cf14 startRunning\cf4 ()\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1054 \u1074 \u1077 \u1088 \u1083 \u1077 \u1081  (\u1079 \u1072 \u1090 \u1077 \u1084 \u1085 \u1077 \u1085 \u1080 \u1077  + \u1088 \u1072 \u1084 \u1082 \u1072 )
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 overlayAdded\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 setupOverlayIfNeeded\cf4 () \{\
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  !\cf13 overlayAdded\cf4  
+\f0\b \cf2 else
+\f1\b0 \cf4  \{ 
+\f0\b \cf2 return
+\f1\b0 \cf4  \}\
+        \cf13 overlayAdded\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  bounds = \cf15 view\cf4 .\cf15 bounds\cf4 \
+        \
+        \cf10 // \uc0\u1047 \u1072 \u1090 \u1077 \u1084 \u1085 \u1077 \u1085 \u1080 \u1077 \cf4 \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  overlay = \cf16 UIView\cf4 (\cf16 frame\cf4 : bounds)\
+        overlay.\cf15 backgroundColor\cf4  = \cf16 UIColor\cf4 .\cf15 black\cf4 .\cf14 withAlphaComponent\cf4 (\cf17 0.6\cf4 )\
+        overlay.\cf15 autoresizingMask\cf4  = [.\cf15 flexibleWidth\cf4 , .\cf15 flexibleHeight\cf4 ]\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  scanRect = \cf8 CGRect\cf4 (\
+            \cf8 x\cf4 : bounds.\cf15 width\cf4  * \cf13 scanAreaRatio\cf4 .\cf15 origin\cf4 .\cf15 x\cf4 ,\
+            \cf8 y\cf4 : bounds.\cf15 height\cf4  * \cf13 scanAreaRatio\cf4 .\cf15 origin\cf4 .\cf15 y\cf4 ,\
+            \cf8 width\cf4 : bounds.\cf15 width\cf4  * \cf13 scanAreaRatio\cf4 .\cf15 width\cf4 ,\
+            \cf8 height\cf4 : bounds.\cf15 height\cf4  * \cf13 scanAreaRatio\cf4 .\cf15 height\cf4 \
+        )\
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  path = \cf16 UIBezierPath\cf4 (\cf16 rect\cf4 : overlay.\cf15 bounds\cf4 )\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  cutout = \cf16 UIBezierPath\cf4 (\cf16 roundedRect\cf4 : scanRect, \cf16 cornerRadius\cf4 : \cf17 16\cf4 )\
+        path.\cf14 append\cf4 (cutout)\
+        path.\cf15 usesEvenOddFillRule\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+        \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  mask = \cf16 CAShapeLayer\cf4 ()\
+        mask.\cf15 path\cf4  = path.\cf15 cgPath\cf4 \
+        mask.\cf15 fillRule\cf4  = .\cf15 evenOdd\cf4 \
+        overlay.\cf15 layer\cf4 .\cf15 mask\cf4  = mask\
+        \
+        \cf15 view\cf4 .\cf14 addSubview\cf4 (overlay)\
+        \
+        \cf10 // \uc0\u1047 \u1077 \u1083 \u1105 \u1085 \u1072 \u1103  \u1088 \u1072 \u1084 \u1082 \u1072 \cf4 \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  border = \cf16 UIView\cf4 (\cf16 frame\cf4 : scanRect)\
+        border.\cf15 layer\cf4 .\cf15 borderWidth\cf4  = \cf17 3\cf4 \
+        border.\cf15 layer\cf4 .\cf15 borderColor\cf4  = \cf16 UIColor\cf4 .\cf15 systemGreen\cf4 .\cf15 cgColor\cf4 \
+        border.\cf15 layer\cf4 .\cf15 cornerRadius\cf4  = \cf17 16\cf4 \
+        border.\cf15 autoresizingMask\cf4  = [.\cf15 flexibleLeftMargin\cf4 , .\cf15 flexibleRightMargin\cf4 ,\
+                                   .\cf15 flexibleTopMargin\cf4 , .\cf15 flexibleBottomMargin\cf4 ]\
+        \cf15 view\cf4 .\cf14 addSubview\cf4 (border)\
+        \
+        \cf10 // \uc0\u1055 \u1086 \u1076 \u1089 \u1082 \u1072 \u1079 \u1082 \u1072 \cf4 \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  hintLabel = \cf16 UILabel\cf4 ()\
+        hintLabel.\cf15 text\cf4  = \cf9 "\uc0\u1053 \u1072 \u1074 \u1077 \u1076 \u1080 \u1090 \u1077  \u1082 \u1072 \u1084 \u1077 \u1088 \u1091  \u1085 \u1072  \u1096 \u1090 \u1088 \u1080 \u1093 \u1082 \u1086 \u1076 "\cf4 \
+        hintLabel.\cf15 textColor\cf4  = .\cf15 white\cf4 \
+        hintLabel.\cf15 font\cf4  = .\cf14 systemFont\cf4 (\cf14 ofSize\cf4 : \cf17 16\cf4 , \cf14 weight\cf4 : .\cf15 medium\cf4 )\
+        hintLabel.\cf15 textAlignment\cf4  = .\cf15 center\cf4 \
+        hintLabel.\cf15 frame\cf4  = \cf8 CGRect\cf4 (\cf8 x\cf4 : \cf17 0\cf4 , \cf8 y\cf4 : scanRect.\cf15 maxY\cf4  + \cf17 20\cf4 ,\
+                                 \cf8 width\cf4 : bounds.\cf15 width\cf4 , \cf8 height\cf4 : \cf17 30\cf4 )\
+        hintLabel.\cf15 autoresizingMask\cf4  = [.\cf15 flexibleWidth\cf4 , .\cf15 flexibleTopMargin\cf4 ]\
+        \cf15 view\cf4 .\cf14 addSubview\cf4 (hintLabel)\
+        \
+        \cf10 // \uc0\u1050 \u1085 \u1086 \u1087 \u1082 \u1072  \u1086 \u1090 \u1084 \u1077 \u1085 \u1099 \cf4 \
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  cancelButton = \cf16 UIButton\cf4 (\cf16 type\cf4 : .\cf15 system\cf4 )\
+        cancelButton.\cf14 setTitle\cf4 (\cf9 "\uc0\u1054 \u1090 \u1084 \u1077 \u1085 \u1072 "\cf4 , \cf14 for\cf4 : .\cf15 normal\cf4 )\
+        cancelButton.\cf15 titleLabel\cf4 ?.\cf15 font\cf4  = .\cf14 systemFont\cf4 (\cf14 ofSize\cf4 : \cf17 17\cf4 , \cf14 weight\cf4 : .\cf15 semibold\cf4 )\
+        cancelButton.\cf14 setTitleColor\cf4 (.\cf15 white\cf4 , \cf14 for\cf4 : .\cf15 normal\cf4 )\
+        cancelButton.\cf15 frame\cf4  = \cf8 CGRect\cf4 (\cf8 x\cf4 : \cf17 20\cf4 , \cf8 y\cf4 : bounds.\cf15 height\cf4  - \cf17 80\cf4 ,\
+                                    \cf8 width\cf4 : \cf17 100\cf4 , \cf8 height\cf4 : \cf17 44\cf4 )\
+        cancelButton.\cf14 addTarget\cf4 (
+\f0\b \cf2 self
+\f1\b0 \cf4 , \cf14 action\cf4 : 
+\f0\b \cf2 #selector
+\f1\b0 \cf4 (\cf18 cancelTapped\cf4 ), \cf14 for\cf4 : .\cf15 touchUpInside\cf4 )\
+        \cf15 view\cf4 .\cf14 addSubview\cf4 (cancelButton)\
+    \}\
+    \
+    
+\f0\b \cf2 @objc
+\f1\b0 \cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 cancelTapped\cf4 () \{\
+        \cf13 onCancelTapped\cf4 ?()\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1054 \u1073 \u1088 \u1072 \u1073 \u1086 \u1090 \u1082 \u1072  \u1089 \u1082 \u1072 \u1085 \u1072 
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 metadataOutput\cf4 (\cf6 _\cf4  output: \cf16 AVCaptureMetadataOutput\cf4 ,\
+                       \cf6 didOutput\cf4  metadataObjects: [\cf16 AVMetadataObject\cf4 ],\
+                       \cf6 from\cf4  connection: \cf16 AVCaptureConnection\cf4 ) \{\
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  !\cf13 isScanning\cf4  
+\f0\b \cf2 else
+\f1\b0 \cf4  \{ 
+\f0\b \cf2 return
+\f1\b0 \cf4  \}\
+        \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  metadataObject = metadataObjects.\cf15 first\cf4  
+\f0\b \cf2 as
+\f1\b0 \cf4 ? \cf16 AVMetadataMachineReadableCodeObject\cf4 ,\
+           
+\f0\b \cf2 let
+\f1\b0 \cf4  stringValue = metadataObject.\cf15 stringValue\cf4  \{\
+            \cf13 isScanning\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+            \cf13 captureSession\cf4 .\cf14 stopRunning\cf4 ()\
+            \
+            \cf14 AudioServicesPlaySystemSound\cf4 (\cf17 1057\cf4 ) \cf10 // \uc0\u1079 \u1074 \u1091 \u1082  \u1091 \u1089 \u1087 \u1077 \u1093 \u1072 \cf4 \
+            \
+            DispatchQueue.\cf15 main\cf4 .\cf14 asyncAfter\cf4 (\cf14 deadline\cf4 : .\cf14 now\cf4 () + \cf17 0.3\cf4 ) \{ [
+\f0\b \cf2 weak
+\f1\b0 \cf4  
+\f0\b \cf2 self
+\f1\b0 \cf4 ] 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+                
+\f0\b \cf2 self
+\f1\b0 \cf4 ?.\cf13 onCodeScanned\cf4 ?(stringValue)\
+            \}\
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 showAlert\cf4 (\cf6 _\cf4  title: \cf8 String\cf4 , \cf6 _\cf4  message: \cf8 String\cf4 ) \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  alert = \cf16 UIAlertController\cf4 (\cf16 title\cf4 : title, \cf16 message\cf4 : message, \cf16 preferredStyle\cf4 : .\cf15 alert\cf4 )\
+        alert.\cf14 addAction\cf4 (\cf16 UIAlertAction\cf4 (\cf16 title\cf4 : \cf9 "OK"\cf4 , \cf16 style\cf4 : .\cf15 default\cf4 ) \{ [
+\f0\b \cf2 weak
+\f1\b0 \cf4  
+\f0\b \cf2 self
+\f1\b0 \cf4 ] _ 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+            
+\f0\b \cf2 self
+\f1\b0 \cf4 ?.\cf14 dismiss\cf4 (\cf14 animated\cf4 : 
+\f0\b \cf2 true
+\f1\b0 \cf4 )\
+        \})\
+        \cf14 present\cf4 (alert, \cf14 animated\cf4 : 
+\f0\b \cf2 true
+\f1\b0 \cf4 )\
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  SwiftUI\
+\
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 CompletionView\cf4 : \cf16 View\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 orderID\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 progress\cf4 : \cf8 Double\cf4 \
+    \cf8 @Environment\cf4 (\\.\cf15 dismiss\cf4 ) 
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 dismiss\cf4 \
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 body\cf4 : 
+\f0\b \cf2 some
+\f1\b0 \cf4  \cf16 View\cf4  \{\
+        \cf8 VStack\cf4 (\cf8 spacing\cf4 : \cf17 30\cf4 ) \{\
+            \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "checkmark.seal.fill"\cf4 )\
+                .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 80\cf4 ))\
+                .\cf14 foregroundColor\cf4 (.\cf15 green\cf4 )\
+            \
+            \cf8 Text\cf4 (\cf9 "\uc0\u1047 \u1072 \u1082 \u1072 \u1079  \cf4 \\(\cf13 orderID\cf4 )\cf9  \uc0\u1074 \u1099 \u1087 \u1086 \u1083 \u1085 \u1077 \u1085 !"\cf4 )\
+                .\cf14 font\cf4 (.\cf15 title\cf4 ).\cf14 bold\cf4 ()\
+            \
+            \cf8 VStack\cf4 (\cf8 alignment\cf4 : .\cf15 leading\cf4 , \cf8 spacing\cf4 : \cf17 10\cf4 ) \{\
+                \cf8 HStack\cf4  \{\
+                    \cf8 Text\cf4 (\cf9 "\uc0\u1055 \u1088 \u1086 \u1075 \u1088 \u1077 \u1089 \u1089 :"\cf4 )\
+                    \cf8 Spacer\cf4 ()\
+                    \cf8 Text\cf4 (\cf9 "\cf4 \\(\cf8 Int\cf4 (\cf13 progress\cf4  * \cf17 100\cf4 ))\cf9 %"\cf4 ).\cf14 bold\cf4 ()\
+                \}\
+                \cf8 HStack\cf4  \{\
+                    \cf8 Text\cf4 (\cf9 "\uc0\u1057 \u1090 \u1072 \u1090 \u1091 \u1089 :"\cf4 )\
+                    \cf8 Spacer\cf4 ()\
+                    \cf8 Text\cf4 (\cf9 "\uc0\u1043 \u1086 \u1090 \u1086 \u1074  \u1082  \u1086 \u1090 \u1075 \u1088 \u1091 \u1079 \u1082 \u1077 "\cf4 ).\cf14 foregroundColor\cf4 (.\cf15 green\cf4 ).\cf14 bold\cf4 ()\
+                \}\
+            \}\
+            .\cf14 padding\cf4 ()\
+            .\cf14 background\cf4 (\cf8 Color\cf4 .\cf15 gray\cf4 .\cf14 opacity\cf4 (\cf17 0.1\cf4 ))\
+            .\cf14 cornerRadius\cf4 (\cf17 12\cf4 )\
+            \
+            \cf8 Button\cf4 (\cf9 "\uc0\u1042 \u1077 \u1088 \u1085 \u1091 \u1090 \u1100 \u1089 \u1103  \u1082  \u1089 \u1087 \u1080 \u1089 \u1082 \u1091  \u1079 \u1072 \u1082 \u1072 \u1079 \u1086 \u1074 "\cf4 ) \{\
+                \cf13 dismiss\cf4 ()\
+            \}\
+            .\cf14 buttonStyle\cf4 (.\cf15 borderedProminent\cf4 )\
+            .\cf14 tint\cf4 (.\cf15 blue\cf4 )\
+            \
+            \cf8 Spacer\cf4 ()\
+        \}\
+        .\cf14 padding\cf4 ()\
+        .\cf14 interactiveDismissDisabled\cf4 ()\
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  SwiftUI\
+\
+
+\f0\b \cf2 @main
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 Diplom2App\cf4 : \cf16 App\cf4  \{\
+    \cf8 @StateObject\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 authManager\cf4  = \cf7 AuthManager\cf4 ()\
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 body\cf4 : 
+\f0\b \cf2 some
+\f1\b0 \cf4  \cf16 Scene\cf4  \{\
+        \cf8 WindowGroup\cf4  \{\
+            \cf12 ContentView\cf4 ()\
+                .\cf14 environmentObject\cf4 (\cf13 authManager\cf4 )\
+                .\cf14 preferredColorScheme\cf4 (.\cf15 light\cf4 )\
+        \}\
+    \}\
+\}\
+\
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 ContentView\cf4 : \cf16 View\cf4  \{\
+    \cf8 @EnvironmentObject\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 authManager\cf4 : \cf7 AuthManager\cf4 \
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 body\cf4 : 
+\f0\b \cf2 some
+\f1\b0 \cf4  \cf16 View\cf4  \{\
+        \cf8 Group\cf4  \{\
+            
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 authManager\cf4 .\cf13 isLoggedIn\cf4  \{\
+                \cf12 OrdersListView\cf4 ()\
+            \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+                \cf12 LoginView\cf4 ()\
+            \}\
+        \}\
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  SwiftUI\
+\
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 LoginView\cf4 : \cf16 View\cf4  \{\
+    \cf8 @EnvironmentObject\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 authManager\cf4 : \cf7 AuthManager\cf4 \
+    \cf8 @State\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 login\cf4  = \cf9 ""\cf4 \
+    \cf8 @State\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 password\cf4  = \cf9 ""\cf4 \
+    \cf8 @State\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 errorMessage\cf4  = \cf9 ""\cf4 \
+    \cf8 @State\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 body\cf4 : 
+\f0\b \cf2 some
+\f1\b0 \cf4  \cf16 View\cf4  \{\
+        \cf8 NavigationStack\cf4  \{\
+            \cf8 VStack\cf4 (\cf8 spacing\cf4 : \cf17 24\cf4 ) \{\
+                \cf8 Spacer\cf4 ()\
+                \
+                \cf8 VStack\cf4 (\cf8 spacing\cf4 : \cf17 12\cf4 ) \{\
+                    \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "shippingbox.fill"\cf4 )\
+                        .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 70\cf4 ))\
+                        .\cf14 foregroundColor\cf4 (.\cf15 blue\cf4 )\
+                    \
+                    \cf8 Text\cf4 (\cf9 "\uc0\u1057 \u1082 \u1083 \u1072 \u1076  WMS"\cf4 )\
+                        .\cf14 font\cf4 (.\cf15 largeTitle\cf4 )\
+                        .\cf14 fontWeight\cf4 (.\cf15 bold\cf4 )\
+                    \
+                    \cf8 Text\cf4 (\cf9 "\uc0\u1057 \u1080 \u1089 \u1090 \u1077 \u1084 \u1072  \u1072 \u1074 \u1090 \u1086 \u1084 \u1072 \u1090 \u1080 \u1079 \u1072 \u1094 \u1080 \u1080  \u1089 \u1082 \u1083 \u1072 \u1076 \u1072 "\cf4 )\
+                        .\cf14 font\cf4 (.\cf15 subheadline\cf4 )\
+                        .\cf14 foregroundColor\cf4 (.\cf15 secondary\cf4 )\
+                \}\
+                .\cf14 padding\cf4 (.\cf15 top\cf4 , \cf17 40\cf4 )\
+                \
+                \cf8 Spacer\cf4 ()\
+                \
+                \cf8 VStack\cf4 (\cf8 spacing\cf4 : \cf17 16\cf4 ) \{\
+                    \cf8 VStack\cf4 (\cf8 alignment\cf4 : .\cf15 leading\cf4 , \cf8 spacing\cf4 : \cf17 6\cf4 ) \{\
+                        \cf8 Text\cf4 (\cf9 "\uc0\u1051 \u1086 \u1075 \u1080 \u1085 "\cf4 ).\cf14 font\cf4 (.\cf15 caption\cf4 ).\cf14 foregroundColor\cf4 (.\cf15 secondary\cf4 )\
+                        \cf8 TextField\cf4 (\cf9 "\uc0\u1042 \u1074 \u1077 \u1076 \u1080 \u1090 \u1077  \u1083 \u1086 \u1075 \u1080 \u1085 "\cf4 , \cf8 text\cf4 : \cf13 $login\cf4 )\
+                            .\cf14 textFieldStyle\cf4 (\cf8 PlainTextFieldStyle\cf4 ())\
+                            .\cf14 padding\cf4 ()\
+                            .\cf14 background\cf4 (\cf8 Color\cf4 (.\cf15 systemGray6\cf4 ))\
+                            .\cf14 cornerRadius\cf4 (\cf17 10\cf4 )\
+                            .\cf14 autocapitalization\cf4 (.\cf15 none\cf4 )\
+                            .\cf14 disableAutocorrection\cf4 (
+\f0\b \cf2 true
+\f1\b0 \cf4 )\
+                    \}\
+                    \
+                    \cf8 VStack\cf4 (\cf8 alignment\cf4 : .\cf15 leading\cf4 , \cf8 spacing\cf4 : \cf17 6\cf4 ) \{\
+                        \cf8 Text\cf4 (\cf9 "\uc0\u1055 \u1072 \u1088 \u1086 \u1083 \u1100 "\cf4 ).\cf14 font\cf4 (.\cf15 caption\cf4 ).\cf14 foregroundColor\cf4 (.\cf15 secondary\cf4 )\
+                        \cf8 SecureField\cf4 (\cf9 "\uc0\u1042 \u1074 \u1077 \u1076 \u1080 \u1090 \u1077  \u1087 \u1072 \u1088 \u1086 \u1083 \u1100 "\cf4 , \cf8 text\cf4 : \cf13 $password\cf4 )\
+                            .\cf14 textFieldStyle\cf4 (\cf8 PlainTextFieldStyle\cf4 ())\
+                            .\cf14 padding\cf4 ()\
+                            .\cf14 background\cf4 (\cf8 Color\cf4 (.\cf15 systemGray6\cf4 ))\
+                            .\cf14 cornerRadius\cf4 (\cf17 10\cf4 )\
+                    \}\
+                    \
+                    
+\f0\b \cf2 if
+\f1\b0 \cf4  !\cf13 errorMessage\cf4 .\cf15 isEmpty\cf4  \{\
+                        \cf8 HStack\cf4  \{\
+                            \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "exclamationmark.circle.fill"\cf4 )\
+                                .\cf14 foregroundColor\cf4 (.\cf15 red\cf4 )\
+                            \cf8 Text\cf4 (\cf13 errorMessage\cf4 )\
+                                .\cf14 font\cf4 (.\cf15 caption\cf4 )\
+                                .\cf14 foregroundColor\cf4 (.\cf15 red\cf4 )\
+                        \}\
+                        .\cf14 padding\cf4 (.\cf15 horizontal\cf4 )\
+                    \}\
+                \}\
+                .\cf14 padding\cf4 (.\cf15 horizontal\cf4 , \cf17 32\cf4 )\
+                \
+                \cf8 Button\cf4 (\cf8 action\cf4 : \cf18 performLogin\cf4 ) \{\
+                    \cf8 HStack\cf4  \{\
+                        
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 isLoading\cf4  \{\
+                            \cf8 ProgressView\cf4 ().\cf14 tint\cf4 (.\cf15 white\cf4 )\
+                        \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+                            \cf8 Text\cf4 (\cf9 "\uc0\u1042 \u1086 \u1081 \u1090 \u1080  \u1074  \u1089 \u1080 \u1089 \u1090 \u1077 \u1084 \u1091 "\cf4 ).\cf14 fontWeight\cf4 (.\cf15 semibold\cf4 )\
+                        \}\
+                    \}\
+                    .\cf14 frame\cf4 (\cf14 maxWidth\cf4 : .\cf15 infinity\cf4 )\
+                    .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 14\cf4 )\
+                    .\cf14 background\cf4 (\cf8 Color\cf4 .\cf15 blue\cf4 )\
+                    .\cf14 foregroundColor\cf4 (.\cf15 white\cf4 )\
+                    .\cf14 cornerRadius\cf4 (\cf17 12\cf4 )\
+                \}\
+                .\cf14 disabled\cf4 (\cf13 login\cf4 .\cf15 isEmpty\cf4  || \cf13 password\cf4 .\cf15 isEmpty\cf4  || \cf13 isLoading\cf4 )\
+                .\cf14 padding\cf4 (.\cf15 horizontal\cf4 , \cf17 32\cf4 )\
+                \
+                \cf8 Spacer\cf4 ()\
+                \
+                \cf8 Text\cf4 (\cf9 "\uc0\u1042 \u1077 \u1088 \u1089 \u1080 \u1103  1.0.0"\cf4 )\
+                    .\cf14 font\cf4 (.\cf15 caption2\cf4 )\
+                    .\cf14 foregroundColor\cf4 (.\cf15 secondary\cf4 )\
+                    .\cf14 padding\cf4 (.\cf15 bottom\cf4 , \cf17 20\cf4 )\
+            \}\
+            .\cf14 navigationTitle\cf4 (\cf9 "\uc0\u1040 \u1074 \u1090 \u1086 \u1088 \u1080 \u1079 \u1072 \u1094 \u1080 \u1103 "\cf4 )\
+            .\cf14 navigationBarTitleDisplayMode\cf4 (.\cf15 large\cf4 )\
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 performLogin\cf4 () \{\
+        \cf13 isLoading\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+        \cf13 errorMessage\cf4  = \cf9 ""\cf4 \
+        \
+        \cf8 Task\cf4  \{\
+            
+\f0\b \cf2 do
+\f1\b0 \cf4  \{\
+                
+\f0\b \cf2 let
+\f1\b0 \cf4  res = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf7 APIClient\cf4 .\cf13 shared\cf4 .\cf18 login\cf4 (\cf18 login\cf4 : \cf13 login\cf4 , \cf18 password\cf4 : \cf13 password\cf4 )\
+                
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+                    \cf10 // \uc0\u55357 \u56613  \u1042 \u1040 \u1046 \u1053 \u1054 : \u1090 \u1086 \u1082 \u1077 \u1085  \u1091 \u1078 \u1077  \u1089 \u1086 \u1093 \u1088 \u1072 \u1085 \u1105 \u1085  \u1074  APIClient.login(),\cf4 \
+                    \cf10 // \uc0\u1085 \u1086  \u1089 \u1086 \u1093 \u1088 \u1072 \u1085 \u1103 \u1077 \u1084  \u1077 \u1097 \u1105  \u1088 \u1072 \u1079  \u1076 \u1083 \u1103  \u1085 \u1072 \u1076 \u1105 \u1078 \u1085 \u1086 \u1089 \u1090 \u1080 \cf4 \
+                    \cf16 UserDefaults\cf4 .\cf15 standard\cf4 .\cf14 set\cf4 (res.\cf13 accessToken\cf4 , \cf14 forKey\cf4 : \cf9 "jwt_token"\cf4 )\
+                    \cf13 authManager\cf4 .\cf18 setToken\cf4 (res.\cf13 accessToken\cf4 )\
+                    \cf13 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+                    \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  Login successful, token saved"\cf4 )\
+                \}\
+            \} 
+\f0\b \cf2 catch
+\f1\b0 \cf4  \{\
+                
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+                    \cf13 errorMessage\cf4  = \cf9 "\uc0\u1053 \u1077 \u1074 \u1077 \u1088 \u1085 \u1099 \u1081  \u1083 \u1086 \u1075 \u1080 \u1085  \u1080 \u1083 \u1080  \u1087 \u1072 \u1088 \u1086 \u1083 \u1100 : \cf4 \\(error.\cf15 localizedDescription\cf4 )\cf9 "\cf4 \
+                    \cf13 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+                    \cf14 print\cf4 (\cf9 "\uc0\u10060  Login failed: \cf4 \\(error)\cf9 "\cf4 )\
+                \}\
+            \}\
+        \}\
+    \}\
+\}\
+\
+\cf14 #Preview\cf4  \{\
+    \cf12 LoginView\cf4 ()\
+        .\cf14 environmentObject\cf4 (\cf7 AuthManager\cf4 ())\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  Foundation\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1040 \u1074 \u1090 \u1086 \u1088 \u1080 \u1079 \u1072 \u1094 \u1080 \u1103 
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 LoginRequest\cf4 : \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 login\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 password\cf4 : \cf8 String\cf4 \
+\}\
+\
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 TokenResponse\cf4 : \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 accessToken\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 tokenType\cf4 : \cf8 String\cf4 \
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 accessToken\cf4  = \cf9 "access_token"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 tokenType\cf4  = \cf9 "token_type"\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1057 \u1074 \u1086 \u1076 \u1082 \u1072  \u1087 \u1086  \u1079 \u1072 \u1082 \u1072 \u1079 \u1091 
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 OrderSummary\cf4 : \cf16 Identifiable\cf4 , \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 id\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 totalTimeSec\cf4 : \cf8 Double\cf4 ?\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 totalDistanceM\cf4 : \cf8 Double\cf4 ?\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 status\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 createdAt\cf4 : \cf8 String\cf4 ?\
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 id\cf4  = \cf9 "order_id"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 totalTimeSec\cf4  = \cf9 "total_time_sec"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 totalDistanceM\cf4  = \cf9 "total_distance_m"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 status\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 createdAt\cf4  = \cf9 "created_at"\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1055 \u1086 \u1079 \u1080 \u1094 \u1080 \u1103  \u1079 \u1072 \u1082 \u1072 \u1079 \u1072 
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 OrderItem\cf4 : \cf16 Identifiable\cf4 , \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 id\cf4 : \cf8 String\cf4  \{ \cf13 materialID\cf4  \}\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 materialID\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 name\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 rack\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 warehouse\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 weight\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 height\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 width\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 depth\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 qty\cf4 : \cf8 Int\cf4 \
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 materialID\cf4  = \cf9 "material_id"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 name\cf4 , \cf6 rack\cf4 , \cf6 warehouse\cf4 , \cf6 weight\cf4 , \cf6 height\cf4 , \cf6 width\cf4 , \cf6 depth\cf4 , \cf6 qty\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1044 \u1077 \u1090 \u1072 \u1083 \u1080  \u1079 \u1072 \u1082 \u1072 \u1079 \u1072 
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 OrderDetails\cf4 : \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 orderID\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 items\cf4 : [\cf12 OrderItem\cf4 ]\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 status\cf4 : \cf8 String\cf4 \
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 orderID\cf4  = \cf9 "order_id"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 items\cf4 , \cf6 status\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1064 \u1072 \u1075  \u1084 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090 \u1072 
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 RouteStep\cf4 : \cf16 Identifiable\cf4 , \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 id\cf4 : \cf8 Int\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 from\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 to\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 timeSec\cf4 : \cf8 Double\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 distM\cf4 : \cf8 Double\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 cumDistM\cf4 : \cf8 Double\cf4 \
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 id\cf4  = \cf9 "step"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 from\cf4  = \cf9 "from_"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 to\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 timeSec\cf4  = \cf9 "time_sec"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 distM\cf4  = \cf9 "dist_m"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 cumDistM\cf4  = \cf9 "cum_dist_m"\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1050 \u1072 \u1088 \u1090 \u1080 \u1085 \u1082 \u1080  \u1089 \u1077 \u1075 \u1084 \u1077 \u1085 \u1090 \u1086 \u1074 
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 RouteSegmentImage\cf4 : \cf16 Identifiable\cf4 , \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 id\cf4 : \cf8 String\cf4  \{ \cf13 name\cf4  \}\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 name\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 pngURL\cf4 : \cf8 String\cf4 \
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 name\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 pngURL\cf4  = \cf9 "png_url"\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1054 \u1090 \u1074 \u1077 \u1090  /route
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 RouteResponse\cf4 : \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 orderID\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 totalTimeSec\cf4 : \cf8 Double\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 totalDistanceM\cf4 : \cf8 Double\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 steps\cf4 : [\cf12 RouteStep\cf4 ]\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 segments\cf4 : [\cf12 RouteSegmentImage\cf4 ]\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 fullPngURL\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 mapWarning\cf4 : \cf8 String\cf4 ?  \cf10 // \uc0\u55357 \u56613  \u1053 \u1054 \u1042 \u1054 \u1045 \cf4 \
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 orderID\cf4  = \cf9 "order_id"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 totalTimeSec\cf4  = \cf9 "total_time_sec"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 totalDistanceM\cf4  = \cf9 "total_distance_m"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 steps\cf4 , \cf6 segments\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 fullPngURL\cf4  = \cf9 "full_png_url"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 mapWarning\cf4  = \cf9 "map_warning"\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1057 \u1086 \u1073 \u1099 \u1090 \u1080 \u1077  \u1089 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1103  (iOS \u8594  \u1089 \u1077 \u1088 \u1074 \u1077 \u1088 )
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 ScanEvent\cf4 : \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 orderID\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 workerID\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 timestamp\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 barcode\cf4 : \cf8 String\cf4 \
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 orderID\cf4  = \cf9 "order_id"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 workerID\cf4  = \cf9 "worker_id"\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 timestamp\cf4 , \cf6 barcode\cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1054 \u1090 \u1074 \u1077 \u1090  \u1089 \u1077 \u1088 \u1074 \u1077 \u1088 \u1072  \u1085 \u1072  \u1089 \u1082 \u1072 \u1085  (FU-05)
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 ScanResponse\cf4 : \cf8 Codable\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 status\cf4 : \cf8 String\cf4        \cf10 // "success", "error", "completed"\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 message\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 progress\cf4 : \cf8 Double\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 materialName\cf4 : \cf8 String\cf4 ?\
+    \
+    
+\f0\b \cf2 enum
+\f1\b0 \cf4  \cf5 CodingKeys\cf4 : \cf8 String\cf4 , \cf16 CodingKey\cf4  \{\
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 status\cf4 , \cf6 message\cf4 , \cf6 progress\cf4 \
+        
+\f0\b \cf2 case
+\f1\b0 \cf4  \cf6 materialName\cf4  = \cf9 "material_name"\cf4 \
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  SwiftUI\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  AVFoundation\
+\
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 OrderDetailsView\cf4 : \cf16 View\cf4  \{\
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 orderID\cf4 : \cf8 String\cf4 \
+    \cf8 @StateObject\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 vm\cf4 : \cf7 OrderDetailsViewModel\cf4 \
+    \cf8 @State\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 showScanner\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \cf8 @State\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 feedbackColor\cf4 : \cf8 Color\cf4 ? = 
+\f0\b \cf2 nil
+\f1\b0 \cf4 \
+    \cf8 @State\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 feedbackMessage\cf4  = \cf9 ""\cf4 \
+    \
+    
+\f0\b \cf2 init
+\f1\b0 \cf4 (\cf6 orderID\cf4 : \cf8 String\cf4 ) \{\
+        
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 orderID\cf4  = orderID\
+        \cf13 _vm\cf4  = \cf8 StateObject\cf4 (\cf8 wrappedValue\cf4 : \cf7 OrderDetailsViewModel\cf4 (\cf7 orderID\cf4 : orderID))\
+    \}\
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 body\cf4 : 
+\f0\b \cf2 some
+\f1\b0 \cf4  \cf16 View\cf4  \{\
+        \cf8 ZStack\cf4  \{\
+            
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  details = \cf13 vm\cf4 .\cf13 details\cf4  \{\
+                \cf8 List\cf4  \{\
+                    \cf8 Section\cf4 (\cf9 "\uc0\u1055 \u1086 \u1079 \u1080 \u1094 \u1080 \u1080  \u1079 \u1072 \u1082 \u1072 \u1079 \u1072 "\cf4 ) \{\
+                        \cf8 ForEach\cf4 (details.\cf13 items\cf4 ) \{ item 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+                            \cf8 HStack\cf4 (\cf8 alignment\cf4 : .\cf15 top\cf4 , \cf8 spacing\cf4 : \cf17 8\cf4 ) \{\
+                                
+\f0\b \cf2 let
+\f1\b0 \cf4  isPicked = \cf13 vm\cf4 .\cf13 pickedMaterialIDs\cf4 .\cf14 contains\cf4 (item.\cf13 materialID\cf4 )\
+                                \cf8 Image\cf4 (\cf8 systemName\cf4 : isPicked ? \cf9 "checkmark.circle.fill"\cf4  : \cf9 "circle"\cf4 )\
+                                    .\cf14 foregroundColor\cf4 (isPicked ? .\cf15 green\cf4  : .\cf15 gray\cf4 )\
+                                    .\cf14 padding\cf4 (.\cf15 top\cf4 , \cf17 4\cf4 )\
+                                    .\cf14 onTapGesture\cf4  \{\
+                                        
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf13 isAccepted\cf4  \{\
+                                            \cf13 vm\cf4 .\cf18 togglePicked\cf4 (\cf18 materialID\cf4 : item.\cf13 materialID\cf4 )\
+                                        \}\
+                                    \}\
+                                \
+                                \cf8 VStack\cf4 (\cf8 alignment\cf4 : .\cf15 leading\cf4 , \cf8 spacing\cf4 : \cf17 4\cf4 ) \{\
+                                    \cf8 Text\cf4 (\cf9 "\cf4 \\(item.\cf13 materialID\cf4 )\cf9  \'97 \cf4 \\(item.\cf15 name\cf4 )\cf9 "\cf4 )\
+                                        .\cf14 font\cf4 (.\cf15 headline\cf4 )\
+                                    \cf8 Text\cf4 (\cf9 "\uc0\u1057 \u1090 \u1077 \u1083 \u1083 \u1072 \u1078  \cf4 \\(item.\cf13 rack\cf4 )\cf9 , \uc0\u1089 \u1082 \u1083 \u1072 \u1076  \cf4 \\(item.\cf13 warehouse\cf4 )\cf9 "\cf4 )\
+                                        .\cf14 font\cf4 (.\cf15 caption\cf4 )\
+                                    \cf8 Text\cf4 (\cf9 "\uc0\u1050 \u1086 \u1083 -\u1074 \u1086 : \cf4 \\(item.\cf13 qty\cf4 )\cf9 "\cf4 )\
+                                        .\cf14 font\cf4 (.\cf15 caption2\cf4 )\
+                                        .\cf14 foregroundColor\cf4 (.\cf15 gray\cf4 )\
+                                    \cf8 Text\cf4 (\cf9 "\uc0\u1042 \u1077 \u1089 : \cf4 \\(item.\cf15 weight\cf4 )\cf9  \uc0\u1082 \u1075 "\cf4 )\
+                                        .\cf14 font\cf4 (.\cf15 caption2\cf4 )\
+                                    \cf8 Text\cf4 (\cf9 "\uc0\u1043 \u1072 \u1073 \u1072 \u1088 \u1080 \u1090 \u1099 : \cf4 \\(item.\cf15 height\cf4 )\cf9  x \cf4 \\(item.\cf15 width\cf4 )\cf9  x \cf4 \\(item.\cf15 depth\cf4 )\cf9  \uc0\u1084 "\cf4 )\
+                                        .\cf14 font\cf4 (.\cf15 caption2\cf4 )\
+                                \}\
+                            \}\
+                            .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 4\cf4 )\
+                        \}\
+                    \}\
+                    \
+                    
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf13 isAccepted\cf4 , 
+\f0\b \cf2 let
+\f1\b0 \cf4  route = \cf13 vm\cf4 .\cf13 route\cf4  \{\
+                        \cf8 Section\cf4 (\cf9 "\uc0\u1052 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090  2D"\cf4 ) \{\
+                            
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  warning = route.\cf13 mapWarning\cf4 , !warning.\cf15 isEmpty\cf4  \{\
+                                \cf8 HStack\cf4  \{\
+                                    \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "exclamationmark.triangle.fill"\cf4 )\
+                                        .\cf14 foregroundColor\cf4 (.\cf15 orange\cf4 )\
+                                    \cf8 Text\cf4 (warning)\
+                                        .\cf14 font\cf4 (.\cf15 caption\cf4 )\
+                                        .\cf14 foregroundColor\cf4 (.\cf15 orange\cf4 )\
+                                \}\
+                                .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 4\cf4 )\
+                            \}\
+                            \
+                            
+\f0\b \cf2 if
+\f1\b0 \cf4  !route.\cf13 fullPngURL\cf4 .\cf15 isEmpty\cf4 , 
+\f0\b \cf2 let
+\f1\b0 \cf4  url = \cf13 vm\cf4 .\cf13 fullRouteImageURL\cf4  \{\
+                                \cf8 AsyncImage\cf4 (\cf8 url\cf4 : url) \{ phase 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+                                    
+\f0\b \cf2 switch
+\f1\b0 \cf4  phase \{\
+                                    
+\f0\b \cf2 case
+\f1\b0 \cf4  .\cf15 empty\cf4 :\
+                                        \cf8 ProgressView\cf4 (\cf9 "\uc0\u1047 \u1072 \u1075 \u1088 \u1091 \u1079 \u1082 \u1072  \u1082 \u1072 \u1088 \u1090 \u1099 \'85"\cf4 )\
+                                            .\cf14 frame\cf4 (\cf14 maxWidth\cf4 : .\cf15 infinity\cf4 , \cf14 minHeight\cf4 : \cf17 200\cf4 )\
+                                    
+\f0\b \cf2 case
+\f1\b0 \cf4  .\cf15 success\cf4 (
+\f0\b \cf2 let
+\f1\b0 \cf4  image):\
+                                        image.\cf14 resizable\cf4 ().\cf14 scaledToFit\cf4 ()\
+                                    
+\f0\b \cf2 case
+\f1\b0 \cf4  .\cf15 failure\cf4 :\
+                                        \cf8 VStack\cf4 (\cf8 spacing\cf4 : \cf17 8\cf4 ) \{\
+                                            \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "map.slash"\cf4 )\
+                                                .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 40\cf4 ))\
+                                                .\cf14 foregroundColor\cf4 (.\cf15 gray\cf4 )\
+                                            \cf8 Text\cf4 (\cf9 "\uc0\u1050 \u1072 \u1088 \u1090 \u1072  \u1085 \u1077 \u1076 \u1086 \u1089 \u1090 \u1091 \u1087 \u1085 \u1072 "\cf4 )\
+                                                .\cf14 foregroundColor\cf4 (.\cf15 gray\cf4 )\
+                                        \}\
+                                        .\cf14 frame\cf4 (\cf14 maxWidth\cf4 : .\cf15 infinity\cf4 , \cf14 minHeight\cf4 : \cf17 200\cf4 )\
+                                    
+\f0\b \cf2 @unknown
+\f1\b0 \cf4  
+\f0\b \cf2 default
+\f1\b0 \cf4 :\
+                                        \cf8 EmptyView\cf4 ()\
+                                    \}\
+                                \}\
+                            \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  
+\f0\b \cf2 if
+\f1\b0 \cf4  route.\cf13 mapWarning\cf4  == 
+\f0\b \cf2 nil
+\f1\b0 \cf4  || route.\cf13 mapWarning\cf4 !.\cf15 isEmpty\cf4  \{\
+                                \cf8 Text\cf4 (\cf9 "\uc0\u1050 \u1072 \u1088 \u1090 \u1072  \u1084 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090 \u1072  \u1087 \u1086 \u1082 \u1072  \u1085 \u1077  \u1076 \u1086 \u1089 \u1090 \u1091 \u1087 \u1085 \u1072 "\cf4 )\
+                                    .\cf14 font\cf4 (.\cf15 caption\cf4 )\
+                            \}\
+                        \}\
+                        \
+                        \cf8 Section\cf4 (\cf9 "\uc0\u1044 \u1077 \u1090 \u1072 \u1083 \u1080 \u1079 \u1072 \u1094 \u1080 \u1103  \u1096 \u1072 \u1075 \u1086 \u1074 "\cf4 ) \{\
+                            \cf8 ForEach\cf4 (route.\cf13 steps\cf4 ) \{ step 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+                                \cf8 HStack\cf4  \{\
+                                    \cf8 VStack\cf4 (\cf8 alignment\cf4 : .\cf15 leading\cf4 ) \{\
+                                        \cf8 Text\cf4 (\cf9 "\cf4 \\(step.\cf15 id\cf4 )\cf9 . \cf4 \\(step.\cf15 from\cf4 )\cf9  \uc0\u8594  \cf4 \\(step.\cf15 to\cf4 )\cf9 "\cf4 )\
+                                        \cf8 Text\cf4 (\cf8 String\cf4 (\cf8 format\cf4 : \cf9 "%.0f \uc0\u1089 , ~%.1f \u1084 "\cf4 ,\
+                                                    step.\cf13 timeSec\cf4 , step.\cf13 distM\cf4 ))\
+                                            .\cf14 font\cf4 (.\cf15 caption\cf4 )\
+                                            .\cf14 foregroundColor\cf4 (.\cf15 gray\cf4 )\
+                                    \}\
+                                    \cf8 Spacer\cf4 ()\
+                                \}\
+                            \}\
+                        \}\
+                        \
+                        \cf8 Section\cf4 (\cf9 "\uc0\u1048 \u1090 \u1086 \u1075 \u1086 "\cf4 ) \{\
+                            \cf8 HStack\cf4  \{\
+                                \cf8 Text\cf4 (\cf9 "\uc0\u1054 \u1073 \u1097 \u1077 \u1077  \u1074 \u1088 \u1077 \u1084 \u1103 :"\cf4 )\
+                                \cf8 Spacer\cf4 ()\
+                                \cf8 Text\cf4 (\cf8 String\cf4 (\cf8 format\cf4 : \cf9 "%.0f \uc0\u1089  (%.1f \u1084 \u1080 \u1085 )"\cf4 ,\
+                                            route.\cf13 totalTimeSec\cf4 ,\
+                                            route.\cf13 totalTimeSec\cf4  / \cf17 60\cf4 ))\
+                                    .\cf14 bold\cf4 ()\
+                            \}\
+                            \cf8 HStack\cf4  \{\
+                                \cf8 Text\cf4 (\cf9 "\uc0\u1054 \u1073 \u1097 \u1077 \u1077  \u1088 \u1072 \u1089 \u1089 \u1090 \u1086 \u1103 \u1085 \u1080 \u1077 :"\cf4 )\
+                                \cf8 Spacer\cf4 ()\
+                                \cf8 Text\cf4 (\cf8 String\cf4 (\cf8 format\cf4 : \cf9 "%.1f \uc0\u1084 "\cf4 , route.\cf13 totalDistanceM\cf4 ))\
+                                    .\cf14 bold\cf4 ()\
+                            \}\
+                            \cf8 HStack\cf4  \{\
+                                \cf8 Text\cf4 (\cf9 "\uc0\u1050 \u1086 \u1083 \u1080 \u1095 \u1077 \u1089 \u1090 \u1074 \u1086  \u1096 \u1072 \u1075 \u1086 \u1074 :"\cf4 )\
+                                \cf8 Spacer\cf4 ()\
+                                \cf8 Text\cf4 (\cf9 "\cf4 \\(route.\cf13 steps\cf4 .\cf15 count\cf4 )\cf9 "\cf4 )\
+                                    .\cf14 bold\cf4 ()\
+                            \}\
+                        \}\
+                        \
+                        \cf8 Section\cf4 (\cf9 "\uc0\u1055 \u1088 \u1086 \u1075 \u1088 \u1077 \u1089 \u1089 "\cf4 ) \{\
+                            \cf8 ProgressView\cf4 (\cf8 value\cf4 : \cf13 vm\cf4 .\cf13 progress\cf4 ) \{\
+                                \cf8 Text\cf4 (\cf9 "\uc0\u1042 \u1099 \u1087 \u1086 \u1083 \u1085 \u1077 \u1085 \u1086 : \cf4 \\(\cf8 Int\cf4 (\cf13 vm\cf4 .\cf13 progress\cf4  * \cf17 100\cf4 ))\cf9 %"\cf4 )\
+                            \}\
+                        \}\
+                    \}\
+                    \
+                    
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  info = \cf13 vm\cf4 .\cf13 lastScanInfo\cf4  \{\
+                        \cf8 Section\cf4 (\cf9 "\uc0\u1055 \u1086 \u1089 \u1083 \u1077 \u1076 \u1085 \u1080 \u1081  \u1089 \u1082 \u1072 \u1085 "\cf4 ) \{\
+                            \cf8 Text\cf4 (info)\
+                                .\cf14 font\cf4 (.\cf15 caption\cf4 )\
+                                .\cf14 foregroundColor\cf4 (.\cf15 blue\cf4 )\
+                        \}\
+                    \}\
+                \}\
+                .\cf14 navigationTitle\cf4 (\cf9 "\uc0\u1047 \u1072 \u1082 \u1072 \u1079  \cf4 \\(\cf13 vm\cf4 .\cf13 orderID\cf4 )\cf9 "\cf4 )\
+                .\cf14 toolbar\cf4  \{\
+                    \cf8 ToolbarItem\cf4 (\cf8 placement\cf4 : .\cf15 bottomBar\cf4 ) \{\
+                        \cf8 HStack\cf4 (\cf8 spacing\cf4 : \cf17 16\cf4 ) \{\
+                            
+\f0\b \cf2 if
+\f1\b0 \cf4  !\cf13 vm\cf4 .\cf13 isAccepted\cf4  \{\
+                                \cf10 // \uc0\u1050 \u1085 \u1086 \u1087 \u1082 \u1072  "\u1055 \u1088 \u1080 \u1085 \u1103 \u1090 \u1100  \u1079 \u1072 \u1082 \u1072 \u1079 " (\u1086 \u1076 \u1085 \u1072  \u1085 \u1072  \u1074 \u1089 \u1102  \u1096 \u1080 \u1088 \u1080 \u1085 \u1091 )\cf4 \
+                                \cf8 Button\cf4 (\cf8 action\cf4 : \{\
+                                    \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  \u1053 \u1072 \u1078 \u1072 \u1090 \u1072  \u1082 \u1085 \u1086 \u1087 \u1082 \u1072 : \u1055 \u1088 \u1080 \u1085 \u1103 \u1090 \u1100  \u1079 \u1072 \u1082 \u1072 \u1079 "\cf4 )\
+                                    \cf13 vm\cf4 .\cf18 acceptOrder\cf4 ()\
+                                \}) \{\
+                                    \cf8 Text\cf4 (\cf9 "\uc0\u1055 \u1088 \u1080 \u1085 \u1103 \u1090 \u1100  \u1079 \u1072 \u1082 \u1072 \u1079 "\cf4 )\
+                                        .\cf14 fontWeight\cf4 (.\cf15 semibold\cf4 )\
+                                        .\cf14 frame\cf4 (\cf14 maxWidth\cf4 : .\cf15 infinity\cf4 )\
+                                        .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 12\cf4 )\
+                                \}\
+                                .\cf14 buttonStyle\cf4 (.\cf15 borderedProminent\cf4 )\
+                                .\cf14 tint\cf4 (.\cf15 blue\cf4 )\
+                            \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+                                \cf10 // \uc0\u55357 \u56613  \u1044 \u1042 \u1045  \u1056 \u1040 \u1047 \u1044 \u1045 \u1051 \u1025 \u1053 \u1053 \u1067 \u1045  \u1050 \u1053 \u1054 \u1055 \u1050 \u1048 \cf4 \
+                                \
+                                \cf10 // \uc0\u1050 \u1085 \u1086 \u1087 \u1082 \u1072  1: \u1052 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090 \cf4 \
+                                \cf8 Button\cf4 (\cf8 action\cf4 : \{\
+                                    \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  \u1053 \u1072 \u1078 \u1072 \u1090 \u1072  \u1082 \u1085 \u1086 \u1087 \u1082 \u1072 : \u1052 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090 "\cf4 )\
+                                    \cf8 Task\cf4  \{\
+                                        \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56960  \u1042 \u1099 \u1079 \u1099 \u1074 \u1072 \u1077 \u1084  buildRoute()..."\cf4 )\
+                                        
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf18 buildRoute\cf4 ()\
+                                        \cf14 print\cf4 (\cf9 "\uc0\u9989  buildRoute() \u1079 \u1072 \u1074 \u1077 \u1088 \u1096 \u1105 \u1085 "\cf4 )\
+                                    \}\
+                                \}) \{\
+                                    \cf8 HStack\cf4 (\cf8 spacing\cf4 : \cf17 6\cf4 ) \{\
+                                        \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "map"\cf4 )\
+                                            .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 16\cf4 , \cf14 weight\cf4 : .\cf15 semibold\cf4 ))\
+                                        \cf8 Text\cf4 (\cf9 "\uc0\u1052 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090 "\cf4 )\
+                                            .\cf14 fontWeight\cf4 (.\cf15 semibold\cf4 )\
+                                            .\cf14 lineLimit\cf4 (\cf17 1\cf4 )\
+                                            .\cf14 minimumScaleFactor\cf4 (\cf17 0.8\cf4 )\
+                                    \}\
+                                    .\cf14 frame\cf4 (\cf14 maxWidth\cf4 : .\cf15 infinity\cf4 )\
+                                    .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 12\cf4 )\
+                                \}\
+                                .\cf14 buttonStyle\cf4 (.\cf15 borderedProminent\cf4 )\
+                                .\cf14 tint\cf4 (.\cf15 blue\cf4 )\
+                                \
+                                \cf10 // \uc0\u55357 \u56613  \u1042 \u1045 \u1056 \u1058 \u1048 \u1050 \u1040 \u1051 \u1068 \u1053 \u1067 \u1049  \u1056 \u1040 \u1047 \u1044 \u1045 \u1051 \u1048 \u1058 \u1045 \u1051 \u1068 \cf4 \
+                                \cf8 Rectangle\cf4 ()\
+                                    .\cf14 fill\cf4 (\cf8 Color\cf4 .\cf15 gray\cf4 .\cf14 opacity\cf4 (\cf17 0.3\cf4 ))\
+                                    .\cf14 frame\cf4 (\cf14 width\cf4 : \cf17 1\cf4 , \cf14 height\cf4 : \cf17 40\cf4 )\
+                                \
+                                \cf10 // \uc0\u1050 \u1085 \u1086 \u1087 \u1082 \u1072  2: \u1057 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1090 \u1100  (\u1090 \u1086 \u1083 \u1100 \u1082 \u1086  \u1077 \u1089 \u1083 \u1080  \u1084 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090  \u1087 \u1086 \u1089 \u1090 \u1088 \u1086 \u1077 \u1085 )\cf4 \
+                                
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf13 route\cf4  != 
+\f0\b \cf2 nil
+\f1\b0 \cf4  \{\
+                                    \cf8 Button\cf4 (\cf8 action\cf4 : \{\
+                                        \cf14 print\cf4 (\cf9 " \uc0\u1053 \u1072 \u1078 \u1072 \u1090 \u1072  \u1082 \u1085 \u1086 \u1087 \u1082 \u1072 : \u1057 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1090 \u1100 "\cf4 )\
+                                        \cf13 showScanner\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+                                    \}) \{\
+                                        \cf8 HStack\cf4 (\cf8 spacing\cf4 : \cf17 6\cf4 ) \{\
+                                            \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "barcode.viewfinder"\cf4 )\
+                                                .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 16\cf4 , \cf14 weight\cf4 : .\cf15 semibold\cf4 ))\
+                                            \cf8 Text\cf4 (\cf9 "\uc0\u1057 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1090 \u1100 "\cf4 )\
+                                                .\cf14 fontWeight\cf4 (.\cf15 semibold\cf4 )\
+                                                .\cf14 lineLimit\cf4 (\cf17 1\cf4 )\
+                                                .\cf14 minimumScaleFactor\cf4 (\cf17 0.8\cf4 )\
+                                        \}\
+                                        .\cf14 frame\cf4 (\cf14 maxWidth\cf4 : .\cf15 infinity\cf4 )\
+                                        .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 12\cf4 )\
+                                    \}\
+                                    .\cf14 buttonStyle\cf4 (.\cf15 borderedProminent\cf4 )\
+                                    .\cf14 tint\cf4 (.\cf15 green\cf4 )\
+                                \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+                                    \cf10 // \uc0\u1045 \u1089 \u1083 \u1080  \u1084 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090  \u1077 \u1097 \u1105  \u1085 \u1077  \u1087 \u1086 \u1089 \u1090 \u1088 \u1086 \u1077 \u1085  \'97 \u1087 \u1086 \u1082 \u1072 \u1079 \u1099 \u1074 \u1072 \u1077 \u1084  \u1090 \u1086 \u1083 \u1100 \u1082 \u1086  \u1082 \u1085 \u1086 \u1087 \u1082 \u1091  \u1084 \u1072 \u1088 \u1096 \u1088 \u1091 \u1090 \u1072 \cf4 \
+                                    \cf8 EmptyView\cf4 ()\
+                                \}\
+                            \}\
+                        \}\
+                        .\cf14 padding\cf4 (.\cf15 horizontal\cf4 , \cf17 16\cf4 )\
+                        .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 8\cf4 )\
+                    \}\
+                \}\
+            \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf13 isLoading\cf4  \{\
+                \cf8 ProgressView\cf4 (\cf9 "\uc0\u1047 \u1072 \u1075 \u1088 \u1091 \u1079 \u1082 \u1072 \'85"\cf4 )\
+            \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  err = \cf13 vm\cf4 .\cf13 error\cf4  \{\
+                \cf8 VStack\cf4 (\cf8 spacing\cf4 : \cf17 16\cf4 ) \{\
+                    \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "exclamationmark.triangle.fill"\cf4 )\
+                        .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 50\cf4 ))\
+                        .\cf14 foregroundColor\cf4 (.\cf15 red\cf4 )\
+                    \cf8 Text\cf4 (\cf9 "\uc0\u1054 \u1096 \u1080 \u1073 \u1082 \u1072 : \cf4 \\(err)\cf9 "\cf4 )\
+                        .\cf14 foregroundColor\cf4 (.\cf15 red\cf4 )\
+                        .\cf14 multilineTextAlignment\cf4 (.\cf15 center\cf4 )\
+                    \cf8 Button\cf4 (\cf9 "\uc0\u1055 \u1086 \u1074 \u1090 \u1086 \u1088 \u1080 \u1090 \u1100 "\cf4 ) \{\
+                        \cf8 Task\cf4  \{ 
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf18 loadDetails\cf4 () \}\
+                    \}\
+                    .\cf14 buttonStyle\cf4 (.\cf15 borderedProminent\cf4 )\
+                \}\
+                .\cf14 padding\cf4 ()\
+            \}\
+            \
+            \cf10 // \uc0\u1054 \u1074 \u1077 \u1088 \u1083 \u1077 \u1081  \u1086 \u1073 \u1088 \u1072 \u1090 \u1085 \u1086 \u1081  \u1089 \u1074 \u1103 \u1079 \u1080  (\u1079 \u1077 \u1083 \u1105 \u1085 \u1099 \u1081 /\u1082 \u1088 \u1072 \u1089 \u1085 \u1099 \u1081 )\cf4 \
+            \cf10 // \uc0\u55357 \u56613  \u1050 \u1088 \u1072 \u1089 \u1080 \u1074 \u1086 \u1077  \u1087 \u1086 \u1083 \u1091 \u1087 \u1088 \u1086 \u1079 \u1088 \u1072 \u1095 \u1085 \u1086 \u1077  \u1089 \u1086 \u1086 \u1073 \u1097 \u1077 \u1085 \u1080 \u1077  \u1086 \u1073 \u1088 \u1072 \u1090 \u1085 \u1086 \u1081  \u1089 \u1074 \u1103 \u1079 \u1080 \cf4 \
+            
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  color = \cf13 feedbackColor\cf4  \{\
+                \cf8 VStack\cf4  \{\
+                    \cf8 Spacer\cf4 ()\
+                    \
+                    \cf8 HStack\cf4 (\cf8 spacing\cf4 : \cf17 12\cf4 ) \{\
+                        \cf8 Image\cf4 (\cf8 systemName\cf4 : color == .\cf15 green\cf4  ? \cf9 "checkmark.circle.fill"\cf4  : \cf9 "xmark.circle.fill"\cf4 )\
+                            .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 28\cf4 ))\
+                            .\cf14 foregroundColor\cf4 (.\cf15 white\cf4 )\
+                        \
+                        \cf8 Text\cf4 (\cf13 feedbackMessage\cf4 )\
+                            .\cf14 font\cf4 (.\cf14 system\cf4 (\cf14 size\cf4 : \cf17 17\cf4 , \cf14 weight\cf4 : .\cf15 semibold\cf4 ))\
+                            .\cf14 foregroundColor\cf4 (.\cf15 white\cf4 )\
+                            .\cf14 lineLimit\cf4 (\cf17 2\cf4 )\
+                            .\cf14 minimumScaleFactor\cf4 (\cf17 0.8\cf4 )\
+                        \
+                        \cf8 Spacer\cf4 ()\
+                    \}\
+                    .\cf14 padding\cf4 (.\cf15 horizontal\cf4 , \cf17 20\cf4 )\
+                    .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 16\cf4 )\
+                    .\cf14 background\cf4 (\
+                        \cf8 RoundedRectangle\cf4 (\cf8 cornerRadius\cf4 : \cf17 16\cf4 )\
+                            .\cf14 fill\cf4 (color.\cf14 opacity\cf4 (\cf17 0.85\cf4 ))  \cf10 // \uc0\u55357 \u56613  \u1055 \u1086 \u1083 \u1091 \u1087 \u1088 \u1086 \u1079 \u1088 \u1072 \u1095 \u1085 \u1099 \u1081  \u1092 \u1086 \u1085 \cf4 \
+                            .\cf14 shadow\cf4 (\cf14 color\cf4 : .\cf15 black\cf4 .\cf14 opacity\cf4 (\cf17 0.3\cf4 ), \cf14 radius\cf4 : \cf17 8\cf4 , \cf14 x\cf4 : \cf17 0\cf4 , \cf14 y\cf4 : \cf17 4\cf4 )\
+                    )\
+                    .\cf14 padding\cf4 (.\cf15 horizontal\cf4 , \cf17 20\cf4 )\
+                    .\cf14 padding\cf4 (.\cf15 bottom\cf4 , \cf17 100\cf4 )  \cf10 // \uc0\u55357 \u56613  \u1055 \u1086 \u1076 \u1085 \u1080 \u1084 \u1072 \u1077 \u1084  \u1074 \u1099 \u1096 \u1077  \u1082 \u1085 \u1086 \u1087 \u1086 \u1082 \cf4 \
+                    .\cf14 transition\cf4 (.\cf14 move\cf4 (\cf14 edge\cf4 : .\cf15 bottom\cf4 ).\cf14 combined\cf4 (\cf14 with\cf4 : .\cf15 opacity\cf4 ))\
+                \}\
+                .\cf14 zIndex\cf4 (\cf17 1\cf4 )\
+            \}\
+        \}\
+        .\cf14 task\cf4  \{\
+            
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf18 loadDetails\cf4 ()\
+        \}\
+        .\cf14 sheet\cf4 (\cf14 isPresented\cf4 : \cf13 $showScanner\cf4 ) \{\
+            \cf12 BarcodeScannerView\cf4  \{ code 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+                \cf13 showScanner\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+                \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56567  \u1054 \u1090 \u1089 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085  \u1082 \u1086 \u1076 : \cf4 \\(code)\cf9 "\cf4 )\
+                \cf8 Task\cf4  \{ 
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf18 handleScan\cf4 (\cf18 barcode\cf4 : code) \}\
+            \} \cf13 onCancel\cf4 : \{\
+                \cf13 showScanner\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+                \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  \u1057 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1077  \u1086 \u1090 \u1084 \u1077 \u1085 \u1077 \u1085 \u1086 "\cf4 )\
+            \}\
+        \}\
+    \}\
+    \
+    \cf10 // 
+\f0\b \cf11 MARK: - \uc0\u1051 \u1086 \u1075 \u1080 \u1082 \u1072  \u1089 \u1082 \u1072 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1103  (FU-05)
+\f1\b0 \cf4 \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 handleScan\cf4 (\cf6 barcode\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  \{\
+        \cf14 print\cf4 (\cf9 "\uc0\u55357 \u56589  \u1054 \u1073 \u1088 \u1072 \u1073 \u1086 \u1090 \u1082 \u1072  \u1089 \u1082 \u1072 \u1085 \u1072 : \cf4 \\(barcode)\cf9 "\cf4 )\
+        \
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  response = 
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf18 verifyScan\cf4 (\cf18 barcode\cf4 : barcode) 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            \cf14 print\cf4 (\cf9 "\uc0\u10060  \u1054 \u1096 \u1080 \u1073 \u1082 \u1072  \u1089 \u1077 \u1090 \u1080  \u1087 \u1088 \u1080  \u1074 \u1077 \u1088 \u1080 \u1092 \u1080 \u1082 \u1072 \u1094 \u1080 \u1080  \u1089 \u1082 \u1072 \u1085 \u1072 "\cf4 )\
+            
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf18 showFeedback\cf4 (\cf18 color\cf4 : .\cf15 red\cf4 , \cf18 message\cf4 : \cf9 "\uc0\u1054 \u1096 \u1080 \u1073 \u1082 \u1072  \u1089 \u1077 \u1090 \u1080 "\cf4 )\
+            \cf18 triggerHaptic\cf4 (\cf18 success\cf4 : 
+\f0\b \cf2 false
+\f1\b0 \cf4 )\
+            
+\f0\b \cf2 return
+\f1\b0 \cf4 \
+        \}\
+        \
+        \cf14 print\cf4 (\cf9 "\uc0\u9989  \u1054 \u1090 \u1074 \u1077 \u1090  \u1089 \u1077 \u1088 \u1074 \u1077 \u1088 \u1072 : status=\cf4 \\(response.\cf13 status\cf4 )\cf9 , message=\cf4 \\(response.\cf13 message\cf4 )\cf9 "\cf4 )\
+        \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  response.\cf13 status\cf4  == \cf9 "success"\cf4  || response.\cf13 status\cf4  == \cf9 "completed"\cf4  \{\
+            
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf18 showFeedback\cf4 (\cf18 color\cf4 : .\cf15 green\cf4 , \cf18 message\cf4 : response.\cf13 message\cf4 )\
+            \cf18 triggerHaptic\cf4 (\cf18 success\cf4 : 
+\f0\b \cf2 true
+\f1\b0 \cf4 )\
+        \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf18 showFeedback\cf4 (\cf18 color\cf4 : .\cf15 red\cf4 , \cf18 message\cf4 : response.\cf13 message\cf4 )\
+            \cf18 triggerHaptic\cf4 (\cf18 success\cf4 : 
+\f0\b \cf2 false
+\f1\b0 \cf4 )\
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 showFeedback\cf4 (\cf6 color\cf4 : \cf8 Color\cf4 , \cf6 message\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  \{\
+        
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+            
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 feedbackColor\cf4  = color\
+            
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 feedbackMessage\cf4  = message\
+        \}\
+        
+\f0\b \cf2 try
+\f1\b0 \cf4 ? 
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf8 Task\cf4 .\cf14 sleep\cf4 (\cf14 nanoseconds\cf4 : \cf17 1_500_000_000\cf4 )\
+        
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+            
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 feedbackColor\cf4  = 
+\f0\b \cf2 nil
+\f1\b0 \cf4 \
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 triggerHaptic\cf4 (\cf6 success\cf4 : \cf8 Bool\cf4 ) \{\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  generator = \cf16 UINotificationFeedbackGenerator\cf4 ()\
+        generator.\cf14 notificationOccurred\cf4 (success ? .\cf15 success\cf4  : .\cf15 error\cf4 )\
+        \
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  success \{\
+            \cf14 AudioServicesPlaySystemSound\cf4 (\cf17 1057\cf4 )\
+        \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            \cf14 AudioServicesPlaySystemSound\cf4 (\cf17 1053\cf4 )\
+        \}\
+    \}\
+\}\
+\
+\cf14 #Preview\cf4  \{\
+    \cf8 NavigationStack\cf4  \{\
+        \cf12 OrderDetailsView\cf4 (\cf12 orderID\cf4 : \cf9 "ORD-001"\cf4 )\
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  Foundation\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  Combine\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  AVFoundation\
+\
+\cf16 @MainActor\cf4 \
+
+\f0\b \cf2 final
+\f1\b0 \cf4  
+\f0\b \cf2 class
+\f1\b0 \cf4  \cf5 OrderDetailsViewModel\cf4 : \cf8 ObservableObject\cf4  \{\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 details\cf4 : \cf12 OrderDetails\cf4 ?\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 route\cf4 : \cf12 RouteResponse\cf4 ?\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 error\cf4 : \cf8 String\cf4 ?\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 lastScanInfo\cf4 : \cf8 String\cf4 ?\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 isAccepted\cf4 : \cf8 Bool\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 pickedMaterialIDs\cf4 : \cf8 Set\cf4 <\cf8 String\cf4 > = []\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 progress\cf4 : \cf8 Double\cf4  = \cf17 0.0\cf4 \
+    \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 orderID\cf4 : \cf8 String\cf4 \
+    
+\f0\b \cf2 let
+\f1\b0 \cf4  \cf6 workerID\cf4 : \cf8 String\cf4  = \cf9 "worker123"\cf4 \
+    \
+    
+\f0\b \cf2 init
+\f1\b0 \cf4 (\cf6 orderID\cf4 : \cf8 String\cf4 ) \{\
+        
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 orderID\cf4  = orderID\
+    \}\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 loadDetails\cf4 () 
+\f0\b \cf2 async
+\f1\b0 \cf4  \{\
+        \cf13 isLoading\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+        \cf13 error\cf4  = 
+\f0\b \cf2 nil
+\f1\b0 \cf4 \
+        
+\f0\b \cf2 defer
+\f1\b0 \cf4  \{ \cf13 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4  \}\
+        
+\f0\b \cf2 do
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 let
+\f1\b0 \cf4  d = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf7 APIClient\cf4 .\cf13 shared\cf4 .\cf18 fetchOrderDetails\cf4 (\cf18 orderID\cf4 : \cf13 orderID\cf4 )\
+            \cf13 details\cf4  = d\
+            \cf13 isAccepted\cf4  = (d.\cf13 status\cf4  == \cf9 "accepted"\cf4  || d.\cf13 status\cf4  == \cf9 "in_progress"\cf4 )\
+        \} 
+\f0\b \cf2 catch
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 error\cf4  = error.\cf15 localizedDescription\cf4 \
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 buildRoute\cf4 () 
+\f0\b \cf2 async
+\f1\b0 \cf4  \{\
+        \cf13 isLoading\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+        \cf13 error\cf4  = 
+\f0\b \cf2 nil
+\f1\b0 \cf4 \
+        
+\f0\b \cf2 defer
+\f1\b0 \cf4  \{ \cf13 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4  \}\
+        
+\f0\b \cf2 do
+\f1\b0 \cf4  \{\
+            \cf13 route\cf4  = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf7 APIClient\cf4 .\cf13 shared\cf4 .\cf18 buildRoute\cf4 (\cf18 orderID\cf4 : \cf13 orderID\cf4 )\
+        \} 
+\f0\b \cf2 catch
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 error\cf4  = error.\cf15 localizedDescription\cf4 \
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 acceptOrder\cf4 () \{\
+        \cf8 Task\cf4  \{\
+            
+\f0\b \cf2 do
+\f1\b0 \cf4  \{\
+                
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf7 APIClient\cf4 .\cf13 shared\cf4 .\cf18 updateOrderStatus\cf4 (\cf18 orderID\cf4 : \cf13 orderID\cf4 , \cf18 status\cf4 : \cf9 "accepted"\cf4 )\
+                
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+                    
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 isAccepted\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+                    
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  d = 
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 details\cf4  \{\
+                        
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 details\cf4  = \cf12 OrderDetails\cf4 (\cf12 orderID\cf4 : d.\cf13 orderID\cf4 , \cf12 items\cf4 : d.\cf13 items\cf4 , \cf12 status\cf4 : \cf9 "accepted"\cf4 )\
+                    \}\
+                \}\
+            \} 
+\f0\b \cf2 catch
+\f1\b0 \cf4  \{\
+                
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+                    
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 error\cf4  = error.\cf15 localizedDescription\cf4 \
+                \}\
+            \}\
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 togglePicked\cf4 (\cf6 materialID\cf4 : \cf8 String\cf4 ) \{\
+        
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 pickedMaterialIDs\cf4 .\cf14 contains\cf4 (materialID) \{\
+            \cf13 pickedMaterialIDs\cf4 .\cf14 remove\cf4 (materialID)\
+        \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+            \cf13 pickedMaterialIDs\cf4 .\cf14 insert\cf4 (materialID)\
+        \}\
+    \}\
+    \
+    \cf10 // \uc0\u55357 \u56613  \u1048 \u1057 \u1055 \u1056 \u1040 \u1042 \u1051 \u1045 \u1053 \u1054 : \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1072 \u1103  \u1074 \u1077 \u1088 \u1080 \u1092 \u1080 \u1082 \u1072 \u1094 \u1080 \u1103  \u1089 \u1082 \u1072 \u1085 \u1072 \cf4 \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 verifyScan\cf4 (\cf6 barcode\cf4 : \cf8 String\cf4 ) 
+\f0\b \cf2 async
+\f1\b0 \cf4  -> \cf12 ScanResponse\cf4 ? \{\
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  details = \cf13 details\cf4  
+\f0\b \cf2 else
+\f1\b0 \cf4  \{ 
+\f0\b \cf2 return
+\f1\b0 \cf4  
+\f0\b \cf2 nil
+\f1\b0 \cf4  \}\
+        \
+        
+\f0\b \cf2 do
+\f1\b0 \cf4  \{\
+            \cf10 // \uc0\u55357 \u56613  \u1042 \u1099 \u1079 \u1099 \u1074 \u1072 \u1077 \u1084  \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1099 \u1081  \u1101 \u1085 \u1076 \u1087 \u1086 \u1080 \u1085 \u1090  /api/scans/verify/\{order_id\}\cf4 \
+            
+\f0\b \cf2 let
+\f1\b0 \cf4  response = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf7 APIClient\cf4 .\cf13 shared\cf4 .\cf18 verifyScan\cf4 (\cf18 orderID\cf4 : details.\cf13 orderID\cf4 , \cf18 barcode\cf4 : barcode)\
+            \
+            
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+                \cf13 lastScanInfo\cf4  = \cf9 "\uc0\u1057 \u1082 \u1072 \u1085 : \cf4 \\(barcode)\cf9  \'97 \cf4 \\(response.\cf13 message\cf4 )\cf9 "\cf4 \
+                \
+                \cf10 // \uc0\u55357 \u56613  \u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1103 \u1077 \u1084  \u1087 \u1088 \u1086 \u1075 \u1088 \u1077 \u1089 \u1089 \cf4 \
+                \cf13 progress\cf4  = response.\cf13 progress\cf4 \
+                \
+                \cf10 // \uc0\u55357 \u56613  \u1054 \u1090 \u1084 \u1077 \u1095 \u1072 \u1077 \u1084  \u1084 \u1072 \u1090 \u1077 \u1088 \u1080 \u1072 \u1083  \u1082 \u1072 \u1082  \u1089 \u1086 \u1073 \u1088 \u1072 \u1085 \u1085 \u1099 \u1081  (\u1074  \u1083 \u1102 \u1073 \u1086 \u1084  \u1087 \u1086 \u1088 \u1103 \u1076 \u1082 \u1077 !)\cf4 \
+                
+\f0\b \cf2 if
+\f1\b0 \cf4  response.\cf13 status\cf4  == \cf9 "success"\cf4  || response.\cf13 status\cf4  == \cf9 "completed"\cf4  \{\
+                    
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  materialName = response.\cf13 materialName\cf4  \{\
+                        \cf10 // \uc0\u1048 \u1097 \u1077 \u1084  \u1084 \u1072 \u1090 \u1077 \u1088 \u1080 \u1072 \u1083  \u1087 \u1086  \u1080 \u1084 \u1077 \u1085 \u1080  \u1074  \u1089 \u1087 \u1080 \u1089 \u1082 \u1077 \cf4 \
+                        
+\f0\b \cf2 for
+\f1\b0 \cf4  item 
+\f0\b \cf2 in
+\f1\b0 \cf4  details.\cf13 items\cf4  \{\
+                            
+\f0\b \cf2 if
+\f1\b0 \cf4  item.\cf13 name\cf4  == materialName || item.\cf13 materialID\cf4  == barcode \{\
+                                \cf13 pickedMaterialIDs\cf4 .\cf14 insert\cf4 (item.\cf13 materialID\cf4 )\
+                                
+\f0\b \cf2 break
+\f1\b0 \cf4 \
+                            \}\
+                        \}\
+                    \}\
+                \}\
+            \}\
+            \
+            
+\f0\b \cf2 return
+\f1\b0 \cf4  response\
+        \} 
+\f0\b \cf2 catch
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf16 MainActor\cf4 .\cf14 run\cf4  \{\
+                \cf13 lastScanInfo\cf4  = \cf9 "\uc0\u1054 \u1096 \u1080 \u1073 \u1082 \u1072 : \cf4 \\(error.\cf15 localizedDescription\cf4 )\cf9 "\cf4 \
+            \}\
+            
+\f0\b \cf2 return
+\f1\b0 \cf4  
+\f0\b \cf2 nil
+\f1\b0 \cf4 \
+        \}\
+    \}\
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 fullRouteImageURL\cf4 : \cf8 URL\cf4 ? \{\
+        
+\f0\b \cf2 guard
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  route = \cf13 route\cf4  
+\f0\b \cf2 else
+\f1\b0 \cf4  \{ 
+\f0\b \cf2 return
+\f1\b0 \cf4  
+\f0\b \cf2 nil
+\f1\b0 \cf4  \}\
+        
+\f0\b \cf2 let
+\f1\b0 \cf4  path = route.\cf13 fullPngURL\cf4 .\cf14 hasPrefix\cf4 (\cf9 "/"\cf4 )\
+            ? \cf8 String\cf4 (route.\cf13 fullPngURL\cf4 .\cf14 dropFirst\cf4 ())\
+            : route.\cf13 fullPngURL\cf4 \
+        
+\f0\b \cf2 return
+\f1\b0 \cf4  \cf7 APIClient\cf4 .\cf13 shared\cf4 .\cf13 baseURL\cf4 .\cf14 appendingPathComponent\cf4 (path)\
+    \}\
+\}\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  SwiftUI\
+
+\f0\b \cf2 import
+\f1\b0 \cf4  Combine  \cf10 // \uc0\u8592  \u1054 \u1041 \u1071 \u1047 \u1040 \u1058 \u1045 \u1051 \u1068 \u1053 \u1054  \u1044 \u1054 \u1041 \u1040 \u1042 \u1048 \u1058 \u1068 !\cf4 \
+\
+\cf10 // 
+\f0\b \cf11 MARK: - ViewModel
+\f1\b0 \cf4 \
+\cf16 @MainActor\cf4 \
+
+\f0\b \cf2 class
+\f1\b0 \cf4  \cf5 OrdersListViewModel\cf4 : \cf8 ObservableObject\cf4  \{\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 orders\cf4 : [\cf12 OrderSummary\cf4 ] = []\
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \cf8 @Published\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 error\cf4 : \cf8 String\cf4 ?\
+    \
+    
+\f0\b \cf2 func
+\f1\b0 \cf4  \cf6 load\cf4 () 
+\f0\b \cf2 async
+\f1\b0 \cf4  \{\
+        \cf13 isLoading\cf4  = 
+\f0\b \cf2 true
+\f1\b0 \cf4 \
+        \cf13 error\cf4  = 
+\f0\b \cf2 nil
+\f1\b0 \cf4 \
+        \
+        
+\f0\b \cf2 do
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 let
+\f1\b0 \cf4  fetched = 
+\f0\b \cf2 try
+\f1\b0 \cf4  
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf7 APIClient\cf4 .\cf13 shared\cf4 .\cf18 fetchOrders\cf4 ()\
+            \cf13 orders\cf4  = fetched.\cf14 sorted\cf4  \{ $0.\cf15 id\cf4  < $1.\cf15 id\cf4  \}\
+        \} 
+\f0\b \cf2 catch
+\f1\b0 \cf4  \{\
+            
+\f0\b \cf2 self
+\f1\b0 \cf4 .\cf13 error\cf4  = error.\cf15 localizedDescription\cf4 \
+        \}\
+        \
+        \cf13 isLoading\cf4  = 
+\f0\b \cf2 false
+\f1\b0 \cf4 \
+    \}\
+\}\
+\
+\cf10 // 
+\f0\b \cf11 MARK: - View
+\f1\b0 \cf4 \
+
+\f0\b \cf2 struct
+\f1\b0 \cf4  \cf5 OrdersListView\cf4 : \cf16 View\cf4  \{\
+    \cf8 @StateObject\cf4  
+\f0\b \cf2 private
+\f1\b0 \cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 vm\cf4  = \cf7 OrdersListViewModel\cf4 ()\
+    \cf8 @EnvironmentObject\cf4  
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 authManager\cf4 : \cf7 AuthManager\cf4 \
+    \
+    
+\f0\b \cf2 var
+\f1\b0 \cf4  \cf6 body\cf4 : 
+\f0\b \cf2 some
+\f1\b0 \cf4  \cf16 View\cf4  \{\
+        \cf8 NavigationStack\cf4  \{\
+            \cf8 Group\cf4  \{\
+                
+\f0\b \cf2 if
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf13 isLoading\cf4  && \cf13 vm\cf4 .\cf13 orders\cf4 .\cf15 isEmpty\cf4  \{\
+                    \cf8 ProgressView\cf4 (\cf9 "\uc0\u1047 \u1072 \u1075 \u1088 \u1091 \u1079 \u1082 \u1072  \u1079 \u1072 \u1082 \u1072 \u1079 \u1086 \u1074 \'85"\cf4 )\
+                \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  err = \cf13 vm\cf4 .\cf13 error\cf4  \{\
+                    \cf8 Text\cf4 (\cf9 "\uc0\u1054 \u1096 \u1080 \u1073 \u1082 \u1072 : \cf4 \\(err)\cf9 "\cf4 )\
+                        .\cf14 foregroundColor\cf4 (.\cf15 red\cf4 )\
+                        .\cf14 padding\cf4 ()\
+                \} 
+\f0\b \cf2 else
+\f1\b0 \cf4  \{\
+                    \cf8 List\cf4 (\cf13 vm\cf4 .\cf13 orders\cf4 ) \{ order 
+\f0\b \cf2 in
+\f1\b0 \cf4 \
+                        \cf8 NavigationLink\cf4 (\cf8 destination\cf4 : \cf12 OrderDetailsView\cf4 (\cf12 orderID\cf4 : order.\cf15 id\cf4 )) \{\
+                            \cf8 VStack\cf4 (\cf8 alignment\cf4 : .\cf15 leading\cf4 , \cf8 spacing\cf4 : \cf17 4\cf4 ) \{\
+                                \cf8 Text\cf4 (\cf9 "\uc0\u1047 \u1072 \u1082 \u1072 \u1079  \cf4 \\(order.\cf15 id\cf4 )\cf9 "\cf4 )\
+                                    .\cf14 font\cf4 (.\cf15 headline\cf4 )\
+                                \
+                                
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  time = order.\cf13 totalTimeSec\cf4  \{\
+                                    \cf8 Text\cf4 (\cf8 String\cf4 (\cf8 format\cf4 : \cf9 "\uc0\u1042 \u1088 \u1077 \u1084 \u1103 : %.0f \u1089 "\cf4 , time))\
+                                        .\cf14 font\cf4 (.\cf15 subheadline\cf4 )\
+                                \}\
+                                \
+                                
+\f0\b \cf2 if
+\f1\b0 \cf4  
+\f0\b \cf2 let
+\f1\b0 \cf4  dist = order.\cf13 totalDistanceM\cf4  \{\
+                                    \cf8 Text\cf4 (\cf8 String\cf4 (\cf8 format\cf4 : \cf9 "\uc0\u1056 \u1072 \u1089 \u1089 \u1090 \u1086 \u1103 \u1085 \u1080 \u1077 : %.1f \u1084 "\cf4 , dist))\
+                                        .\cf14 font\cf4 (.\cf15 subheadline\cf4 )\
+                                \}\
+                                \
+                                \cf8 Text\cf4 (\cf9 "\uc0\u1057 \u1090 \u1072 \u1090 \u1091 \u1089 : \cf4 \\(order.\cf15 status\cf4 )\cf9 "\cf4 )\
+                                    .\cf14 font\cf4 (.\cf15 caption\cf4 )\
+                                    .\cf14 foregroundColor\cf4 (.\cf15 gray\cf4 )\
+                            \}\
+                            .\cf14 padding\cf4 (.\cf15 vertical\cf4 , \cf17 4\cf4 )\
+                        \}\
+                    \}\
+                    .\cf14 refreshable\cf4  \{\
+                        
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf18 load\cf4 ()\
+                    \}\
+                \}\
+            \}\
+            .\cf14 navigationTitle\cf4 (\cf9 "\uc0\u1047 \u1072 \u1082 \u1072 \u1079 \u1099 "\cf4 )\
+            .\cf14 toolbar\cf4  \{\
+                \cf8 ToolbarItem\cf4 (\cf8 placement\cf4 : .\cf15 topBarTrailing\cf4 ) \{\
+                    \cf8 Button\cf4  \{\
+                        \cf13 authManager\cf4 .\cf18 logout\cf4 ()\
+                    \} \cf15 label\cf4 : \{\
+                        \cf8 Image\cf4 (\cf8 systemName\cf4 : \cf9 "rectangle.portrait.and.arrow.right"\cf4 )\
+                    \}\
+                \}\
+            \}\
+            .\cf14 task\cf4  \{\
+                
+\f0\b \cf2 await
+\f1\b0 \cf4  \cf13 vm\cf4 .\cf18 load\cf4 ()\
+            \}\
+        \}\
+    \}\
+\}\
+\
+\cf14 #Preview\cf4  \{\
+    \cf12 OrdersListView\cf4 ().\cf14 environmentObject\cf4 (\cf7 AuthManager\cf4 ())\
+\}\
+}

@@ -1,0 +1,10 @@
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.5.0
+sqlalchemy>=2.0.23
+passlib>=1.7.4
+python-jose>=3.3.0
+numpy>=1.26.0
+scikit-learn>=1.3.0
+matplotlib>=3.8.0
+requests>=2.31.0
